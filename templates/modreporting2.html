@@ -1,0 +1,481 @@
+<patTemplate:tmpl name="page">
+
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+    <html>
+        <head>
+            <title></title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <link href="css/dinamico.php?modo=modreporting&amp;extra=modreporting&amp;v={RANDOM}" rel="stylesheet"  type="text/css" />
+            <link href="css/reporting_style.css" rel="stylesheet"  type="text/css" />
+
+            <link href="js/jquery-purr/purr.css" rel="stylesheet"  type="text/css" />
+
+            <link href="css/ui-lightness/jquery-ui-1.8.1.custom.css" rel="stylesheet"  type="text/css" />
+
+            <script src="js/dinamicojs.php?modo=modreporting&amp;extra=modreporting&amp;v={RANDOM}"></script>
+
+            <!--    <script src="js/firebug.js" ></script> -->
+
+            <!--
+            <script type="text/javascript" src="js/lite/firebug-lite.js">
+            {
+                overrideConsole: true,
+                startInNewWindow: false,
+                showIconWhenHidden: false,
+                disableXHRListener: true,
+                startOpened: false,
+                enableTrace: false
+            }
+            </script>
+            -->
+
+            <!--[if ie]>
+            
+                <style>
+            
+              #root {
+                padding-top: 1px;
+              }
+            
+               #nombreListado {
+               padding-top: 8px;
+               top:54px;
+              }
+            
+            #filtrosagrupados, #filtrosfiltros {
+                padding-top:6px;   
+            }
+            
+            
+            
+                </style>
+            
+            
+            <![endif]-->
+
+            <script src="js/ui/jquery.ui.core.js" ></script>
+            <script src="js/jquery.draggable2.js"></script>
+
+            <!--[if ie]>
+            <script src="js/ui/jquery.ui.draggable.js" ></script>
+            <![endif]-->
+
+
+            <script src="js/ui/jquery.ui.button.js"></script>
+            <script src="js/ui/jquery.ui.datepicker.js"></script>
+            <script src="js/ui/jquery.ui.mouse.js"></script>
+
+            <!-- <script src="js/ui.multiselect.js"></script> -->
+
+
+
+            <script src="js/jquery.corner.js"></script>
+            <script src="js/jquery-purr/jquery.purr.js"></script>
+
+
+            <script src="js/D_RESUMEN_DATOS_definiciones.php?v={RANDOM}"></script>
+
+
+            <script type="text/javascript">
+                var tablaOriginal;
+                var po_recargar = "El informe ha cambiado, recargar";
+                var po_cargando = "Cargando...";
+                var po_enviando = po_cargando;
+                var po_entrenombreinforme = "Entre un nombre para guardar el informe";
+
+                if(typeof filtros =="undefined"){
+                    var filtros = {"novacio":1};
+                }
+
+                if(typeof ventana =="undefined"){
+                    var ventana = {"novacio":1};
+                }
+
+                if(typeof permisos =="undefined"){
+                    var permisos = {"novacio":1};
+                }
+
+
+                //gestion de filtros
+                filtros._enUso= [<patTemplate:tmpl name="list_columnas_js">"{TIPO}",</patTemplate:tmpl>""];//columnas visibles
+                filtros._agruparLista= [<patTemplate:tmpl name="list_agrupar_js">"{TIPO}",</patTemplate:tmpl>""]; //agrupar por
+                filtros._subtotalLista= [<patTemplate:tmpl name="list_subtotal_js">"{TIPO}",</patTemplate:tmpl>""];//subtotales por
+                filtros._filtrosLista= [<patTemplate:tmpl name="list_filtros_js">"{TIPO}",</patTemplate:tmpl>""];//filtrando esto..
+                filtros._filtrosModo= [<patTemplate:tmpl name="list_filtros_modo">"{TIPO}",</patTemplate:tmpl>""];//filtrando esto..
+                filtros._filtrosListaReadOnly= [<patTemplate:tmpl name="list_filtros_ro_js">"{TIPO}",</patTemplate:tmpl>""];//filtrando esto..
+                filtros._filtrosListaParam= [<patTemplate:tmpl name="list_filtros_param_js">
+                        <patTemplate:tmpl unusedvars="ignore">{</patTemplate:tmpl>
+                            "tipo":"{TIPO}"
+                        {PARAMS}
+                            <patTemplate:tmpl unusedvars="ignore">}</patTemplate:tmpl>,</patTemplate:tmpl>{"tipo":false,"param1":false}];//filtrando esto..
+                filtros._filtrosModoFiltro={MODOFILTRO_JS};//filtrando esto..
+                filtros.version = 1;
+   
+                ventana.version=1;
+                ventana.id_user={IDUSER};
+                ventana.id_informe={IDINFORME};
+                ventana.informe_sololectura={INFORMESOLOLECTURA};
+                ventana.necesitaRecargarPagina=false; //necesita recargar toda la pagina
+    
+
+
+                function loop_call(){
+
+                    if(ventana.esCargaSucia()){
+                        setTimeout(loop_call,200);
+                        return;
+                    }
+
+                    ventana.muestraListado();
+                }
+
+                permisos.mostrar_subtotales = {MOSTRARSUBTOTALES};
+                permisos.botones_crud_informe  = {BOTONESCRUD};
+                permisos.agnadir_columnas_engrid = {AGNADIRCOLUMNASENGRID};
+                permisos.debug_sql = {DEBUGSQL};
+                permisos.filtro_agnade_columna = {FILTROAGNADECOLUMNA};
+
+                /*
+             - problema ie seleccion multiple
+            - problema arrastra columnas ie
+            - cambia las filas de orden
+            - asesor!=0 filtro excepto admin
+            - asesor 0 no filtra (no importante)
+            - ocultar subtotales para todos excepto admin
+            - al añadir un filtro no meta la columna automaticamente
+            - quitar botones, excepto el que elige el listado (excepto admin)
+            - no pueda agnadir columnas arrastrando grid
+
+
+                 */
+
+
+                $(document).ready(function() {
+                    hacerDropable();
+                    var hayAutoEnviar = {AUTOENVIO}0;
+
+                    if (hayAutoEnviar){
+
+                        if(!ventana.esCargaSucia()){
+                            ventana.muestraListado();
+                        } else {
+                            loop_call();//lo llama cuando no sea sucia
+                        }
+
+                    }
+                });
+
+
+
+
+            </script>
+
+        </head>
+        <body class="navegador_otro">
+                <patTemplate:tmpl name="cabeza" src="cabeza.txt" autoload="on" parse="on"/>
+                <patTemplate:tmpl name="menu" src="menu.htm" autoload="on" parse="on"/>
+            <div id="root">
+                <div id="contenedor">
+					<div  class="cambiaModos" >
+
+					<div class="clb"></div>
+                    </div>
+							<div class="clb"></div>
+					<div class="caj-flt">
+						<div class="caj-carga"><a href="#afcarga" id="focuscarga"></a></div>
+						<h3 id="nombreListado" class="<patTemplate:var name="conflecha2" modifier="html8"/>" data-original="<patTemplate:var name="nombreListado" modifier="html8"/>"><patTemplate:var name="nombreListado" modifier="html8"/> </h3>
+					</div>
+					<div class="clb"></div>
+
+                  
+					
+                    <!-- <br style="clear:both"></br> -->
+
+                    <div class="{CSSCOMPARTIR}">
+                        <div class="noticioso">
+                            <form id="aceptador" action="modreporting.php" method="post"><input type="hidden" name="modo" value="aceptar-informe"><input type="hidden" name="id_informe" value="<patTemplate:var name="id_informe_aceptar" />" >
+                                                                                                                                                         <p>El usuario <i><patTemplate:var name="nombre_usuario_comparte" modifier="html8"/></i> le envia un informe.</p>
+                                <p><input type="text" name="nombre_informe" style="width: 40em" value="<patTemplate:var name="nombre_informe" modifier="html8"/>"> &nbsp;<input type="submit" value="Aceptar informe"><input id="boton_cancelador" type="button" value="Rechazar">
+                            </form>
+                        </div>
+                        <form id="cancelador" action="modreporting.php" method="post"><input type="hidden" name="modo" value="rechazar-informe"><input type="hidden" name="id_informe" value="<patTemplate:var name="id_informe_aceptar" />" ></form>
+                          <br style="clear:both"></br>
+                    </div>
+
+
+                    <table id="solucionesfiltros" border="0">
+                        <tr>
+                            <td width="236" valign="top" class="auxiliarsincolumnas">
+                                <!--<h1  style="position:Relative;top:-4px;margin:0px;padding:0px"><img src="img/mis_informes.png" hspace="5" align="absmiddle" style="width:20px;height:20px" />Mis informes </h1> -->
+                                <input type="button" value="Listado limpio" id="accion_reinicio" />
+
+                                <select id="listaReportesUsuario" class="gui-col1">
+                                    <option>Cargar otro listado...</option>
+                                    <optgroup label="Globales">
+                                        <patTemplate:tmpl name="lista_reporting">
+                                            <option value="<patTemplate:var name="id_reporting_user_list" />" data-readonly="true" id="listado_<patTemplate:var name="id_reporting_user_list" />"><patTemplate:var name="name" modifier="html8"/></option>
+                                        </patTemplate:tmpl>
+                                    </optgroup>
+                                    <!-- --------------------------------------------------------- -->
+                                    <optgroup label="Personales">
+                                        <patTemplate:tmpl name="lista_reporting2">
+                                            <option class="personal" value="<patTemplate:var name="id_reporting_user_list" />"  data-readonly="false"  id="listado_<patTemplate:var name="id_reporting_user_list" />"><patTemplate:var name="name" modifier="html8"/></option>
+                                        </patTemplate:tmpl>
+                                    </optgroup>
+                                    <!-- --------------------------------------------------------- -->
+                                    <optgroup label="Compartidos">
+                                        <patTemplate:tmpl name="lista_reporting_compartidos">
+                                            <option class="personal" value="<patTemplate:var name="id_reporting_user_list" />"  data-readonly="false"  id="listado_<patTemplate:var name="id_reporting_user_list" />"><patTemplate:var name="name" modifier="html8"/></option>
+                                        </patTemplate:tmpl>
+                                    </optgroup>
+
+                                </select>
+                                <input id="guardarcambios" type="button" src="images/nuevoinforme.png" value="Guardar cambios" class="butonizar gui-col1" />
+                                <input id="salvareporte" type="button" src="images/nuevoinforme.png" value="Guardar como.." class="butonizar gui-col1" />
+
+                        <patTemplate:Auth command="modreporting/compartir_listados"  defecto="false">
+                            <select id="compartirlistado" class="gui-col1">
+                                <option value="-1">Compartir listado...</option>
+                                <optgroup label="Grupo">
+                                    <option value="12">usuarios administradores</option>
+                                    <option value="11">usuarios consulta</option>
+                                </optgroup>
+                                <optgroup label="Otro/todos">
+                                    <option value="otrousuario">Otro usuario..</option>
+                                </optgroup>
+                            </select>
+                        </patTemplate:Auth>
+
+
+                        <div class="oculto">
+                            <input type="hidden" id="paginaEstamos">
+                            <input type="hidden" id="paginaCargando">
+                        </div>
+
+                    </td><td  valign="top">
+                    <!-- ---------------- -->
+                    <table width="98%">
+                        <tr  id="filtrosagrupados_caja" ><td valign="middle" width="100"  class="clasesFiltro" ><p>Agrupar por:</p></td>
+                            <td valign="top"><div id="filtrosagrupados" class="receptor ragrupados">&nbsp;<img src="images/trans.png" height="30" width="1" align="absmiddle"></div></td></tr>
+                        <tr  id="filtrosubtotales_caja" class="oculto"><td valign="middle" class="clasesFiltro"><p>Subtotales:</p></td>
+                            <td valign="top" ><div id="filtrosubtotales" class="receptor">&nbsp;</div></td></tr>
+                        <tr  id="filtrosfiltros_caja" ><td valign="middle" class="clasesFiltro"><p>Filtrar por:</p></td>
+                            <td valign="top"><div id="filtrosfiltros" class="receptor">&nbsp;<img src="images/trans.png" height="30" width="1" align="absmiddle"></div></td></tr>
+                        <tr id="sinfiltros_caja"><td valign="top"  colspan="3" class="nobr">
+                            </td></tr>
+                    </table>
+                    <!-- ----------------- -->
+                </td>
+                </tr>
+                <tr><td></td><td id="seleccionesMultiples"></td></tr>
+                <tr>
+                    <td>  </td>
+                    <td>
+
+                        <!-- <input type="text" id="vdebug" value="" style="width: 600px"> -->
+                        <input id="botonRecargarVoluntario" style="width:300px;float:left" type="button" value="El informe ha cambiado, recargar" onclick="ventana.muestraListado()" class="oculto" />
+                        <span style="float:right">
+                            <input  id="botonRecargarVoluntario2" type="image" src="images/refrescar.png"  value="&nbsp; &nbsp; &nbsp; Refrescar" onclick="ventana.muestraListado()" class="butonizar">
+                            &nbsp; &nbsp;
+                            <input id="accion_guardar"  type="image" src="images/guardar1.png"  value="&nbsp; &nbsp; &nbsp; Guardar" class="butonizar oculto">
+                            <input id="accion_imprimir" type="image" src="images/imprimir1.png"  value="Imprimir" class="butonizar">
+                            <!-- <input type="image" src="images/email.png"  value="Email" class="butonizar"> -->
+                            <input id="accion_toexcel" type="image" src="images/excel.png" value="Excel" class="butonizar">
+
+                            <input type="button" value="." onclick="alert(filtros._filtrosLista.join('--'))" style="display:none">
+                            <input type="button" value="." onclick="footest()"  style="display:none">
+
+                        </span>
+                    </td>
+
+                </tr>
+                <tr><td>
+
+                        <input id="toggleColpaleta" type="button"  value="Mostrar/ocultar" class="butonizar gui-col1" style="width: 198px;" />
+
+                    </td><td ><div id="cajaMenuSubtotales">Subtotales por: <span id="subtotales_menu"></span></div></td><tr>
+            </table>
+
+            <div style="text-align: left"><div class="oculto">
+
+
+
+                    <form method="post" action="modreporting.php" id="reporting">
+                        <input type="hidden" name="modo" value="cogedatos" id="modoform" />
+
+                        <!-- "filtros" -->
+                        <input type="hidden" name="columnas"  id="icolumnas" value="<patTemplate:tmpl name="list_columnas_data">"{TIPO}",</patTemplate:tmpl>" />
+                        <input type="hidden" name="agrupamientos"   id="iagrupamientos" value="<patTemplate:tmpl name="list_agrupamientos_data">"{TIPO}",</patTemplate:tmpl>" />
+                        <input type="hidden" name="filtros"  id="ifiltros" value="<patTemplate:tmpl name="list_filtros_data">"{TIPO}",</patTemplate:tmpl>" />
+                        <input type="hidden" name="xsubtotales"  id="isubtotales" value="<patTemplate:tmpl name="list_subtotal_data">"{TIPO}",</patTemplate:tmpl>" />
+
+
+                        <input type="hidden" name="modosfiltros"  id="imodosfiltros" value="<patTemplate:tmpl name="list_mododfiltros_data">"{TIPO}",</patTemplate:tmpl>" />
+
+                        <input type="hidden" name="nombre_para_informe" value="" id="nombre_para_informe" />
+
+
+                        <!-- avg/sum columnas -->
+                        <input type="hidden" id="avgcolumnas" name="avgcolumnas" value="" />
+
+                        <!-- ordenar columnas -->
+                        <input type="hidden" id="ordenarpor" name="ordenarpor" value="" />
+                        <input type="hidden" id="ordenarpor_direccion" name="ordenarpor_direccion" value="" />
+
+                        <!-- columnas acumulador -->
+                        <input type="hidden" id="campos_acumulador" name="campos_acumulador" value="" />
+
+                        <!-- otros -->
+                        <input type="hidden" id="offsetvalue" name="offsetvalue" value="0">
+
+                        <input type="hidden" id="eligidoagrupar" name="eligidoagrupar" value="" />
+                        <input type="hidden" id="modosharereport" name="modosharereport" value="" />
+                        <input type="hidden" id="idmodosharereport" name="idmodosharereport" value="" />
+
+                        <input type="hidden" id="nombresugerido" name="nombresugerido" value="<patTemplate:var name="nombreListado" modifier="html8"/>" />
+
+                    </form>
+                </div><table width="100%" border="0" style="width:100%;border-spacing:0px;border-collapse: collapse;" cellpadding="0" cellspacing="0">
+                    <tr><td valign="top" id="colpaleta">
+
+                            <input type="text" id="buscacampo" />
+
+                            <div id="paleta">
+                            </div>
+
+                            <!-- <img src="img/ajaxbar.gif" id="ajaxbar" class="oculto"  style="position: absolute; top: 150px; left: 5px;"> -->
+                            <!-- <img src="img/ajaxbar.gif" id="ajaxbar" class="oculto"  style="position: absolute; top: 180px; left: 5px;"> -->
+                            <img src="img/ajaxbar.gif" id="ajaxbar" class="oculto"  style="position: absolute; top: 52px; left: 5px;">
+
+                        </td>
+                        <td valign="top" style="">
+
+                            <div id="contenedorcajacajas">
+                                <table id="tablaresultados1" class="tablesorter droppable" style="margin:0px" border="0" cellpadding="0" cellspacing="0">
+                                    <thead>
+                                        <tr id="lista_columnas_icons">
+                                    <patTemplate:tmpl name="list_columnas_icons">
+                                        <td class="tbl-result-th" id="icons_D_RESUMEN_DATOS_{ID}" class="iconosfila">
+                                            <img title="Eliminar" src="icons/delete.png" class="clickme iconito" id="icondelete_D_RESUMEN_DATOS_{ID}" data-tipo="delete" data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                        
+                                            --><img  src="icons/1downarrow2.gif" title="Orden actual: normal" class="clickme iconito iconitosort" id="iconnormal_D_RESUMEN_DATOS_{ID}" data-tipo="up"  data-newid="D_RESUMEN_DATOS_{ID}" data-normal="true"><!--
+                                            --><img  style="display:none" title="Orden actual: ascendente" src="icons/1downarrow.png" class="clickme iconito  iconitosort" id="icondown_D_RESUMEN_DATOS_{ID}" data-tipo="down"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --><img  style="display:none" title="Orden actual: descencente" src="icons/1uparrow.png" class="clickme iconito  iconitosort" id="iconup_D_RESUMEN_DATOS_{ID}"  data-tipo="normal"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --><img src="icons/sum.gif"  title="Calculo actual: suma de columna" class="clickme iconito" id="iconsum_D_RESUMEN_DATOS_{ID}" data-tipo="sum"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --><img style="display:none" title="Calculo actual: media de columna" src="icons/average2.gif" class="clickme iconito" id="iconave_D_RESUMEN_DATOS_{ID}" data-tipo="ave"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --><img src="icons/plusicon.gif" title="Poner en agrupar" class="clickme iconito oculto" id="iconmas_D_RESUMEN_DATOS_{ID}"  data-tipo="mas"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --><img src="icons/biger.png" title="Acumulador" class="clickme iconito acumtoggle" id="iconacum_D_RESUMEN_DATOS_{ID}"  data-tipo="acum"  data-newid="D_RESUMEN_DATOS_{ID}"><!--
+                                            --></td>
+                                    </patTemplate:tmpl>
+                                    <td class="tbl-result-th" style="width:15px"> </td>
+                                    </tr>
+                                    <tr id="lista_columnas">
+                                    <patTemplate:tmpl name="list_columnas">
+                                        <th class="cajacabeza_columna" valign="center" id="thh_D_RESUMEN_DATOS_{ID}">
+                                            <a class="cabeza_columna" id="cabeza_D_RESUMEN_DATOS_{ID}" rel="D_RESUMEN_DATOS_{ID}">{TIPO}</a>
+                                        </th>
+                                    </patTemplate:tmpl>
+                                    <th style="width:15px"> </th>
+                                    </tr>
+
+                                    </thead>
+                                </table>
+
+                                <!-- <hr> <input type="text" id="posicionscroll" value="" style="width:800px">  -->
+
+
+
+                                <div  id="contenedorcajaresultados" style="
+                                      height: 400px;
+                                      overflow: -moz-scrollbars-vertical;
+                                      overflow-x: hidden;
+                                      overflow-y: scroll;
+                                      background-color:white;
+                                      ">
+                                    <table id="tablaresultados" class="tablesorter droppable" style="margin:0px" border="0" cellpadding="0" cellspacing="1" width="100%">
+                                        <tbody id="cajaderesultados">
+                                            <tr><td align="center" colspan="{NUMCOLUMNAS}" id="mensajecargando"></td> </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <table id="tablaresultados3" class="tablesorter droppable" style="margin:0px" border="0" cellpadding="0" cellspacing="0">
+                                    <tbody id="cajaderesultados_subtotales">
+                                        <tr><td align="center" colspan="{NUMCOLUMNAS}" id="mensajecargando_subtotales"></td> </tr>
+                                    </tbody>
+                                    <tfoot id="cajaresultados_data">
+                                        <tr><td>Filas: <span id="num_lineas_listado"></span></td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+
+
+
+
+
+
+                            </div>
+
+                            <div id="avisoupdate">Aviso: ultima actualización de datos el <patTemplate:var name="ultima_actualizacion" modifier="Fechahora"/></div> 
+
+                            <!--  DEBUG SQL -->
+                    <patTemplate:Auth command="modreporting/boton_mostrarsql"  defecto="false">
+
+                        <input id="boton_MostrarSQL" type="button" value="Mostrar SQL" onclick="$('#debuglogs').toggle()" style="height: 18px;font-size:10px;margin-top:6px;" >
+                        <div style='margin-right:16px;margin-top:16px;display:none;' id="debuglogs">
+
+
+                            <hr>Normal:
+                            <div id='sql_mostrar_normal' class='autolog'>
+                            </div>
+                            <hr>Subtotales:
+                            <div  id='sql_mostrar_subtotales' class='autolog'>
+                            </div>
+                            <hr>Total:
+                            <div  id='sql_mostrar_total'  class='autolog'>
+                            </div>
+
+                            <div class=oculto>
+                                <hr>Agrupar,txt:
+                                <div  id='agrupar_txt' >
+                                </div>
+
+                                <hr>Columnas,txt:
+                                <div  id='columnas_txt'  >
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </patTemplate:Auth>
+                    <!--  /DEBUG SQL -->
+
+
+                    </td></tr>
+
+                    <tr>
+                        <td id="fila2debug"></td>
+                        <td>
+
+
+                        </td>
+                    </tr>
+                </table>
+
+                <!--
+            <div style="margin:6px" />&nbsp;</div>
+                -->
+
+                <iframe id="descargando" class="ocultoframe" name="descargando"></iframe>
+                <iframe id="imprimir" class="ocultoframe" name="imprimir"></iframe>
+                <iframe id="toexcel" class="ocultoframe" name="toexcel"></iframe>
+
+
+            </div></div></div></div>
+
+</body>
+</html>
+
+</patTemplate:tmpl>
+

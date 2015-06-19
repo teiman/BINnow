@@ -1,0 +1,45 @@
+
+<form action='{MODNAME}.php' method='post' id="validateMe">
+<h3 class="h3-tit-gest">Gestión de Grupos</h3>
+
+<input type='hidden' name='modo' value='{MODOEDICION}' />
+<input type='hidden' name='id_group' value='{ID_GROUP}' />
+
+
+<table class="cajaedicion"  cellspacing='0' cellpadding='0' >
+<tr>
+<td valign='top'>
+
+
+    <table width='100%'>
+<thead  class="headListado">
+    
+<th colspan="3"><patTemplate:var name="modoediciontxt" modifier="html8"/></th></thead>
+
+<tr class="filaListado filaImpar">
+	<td class="col1">Grupo</td>
+	<td colspan="2"><input  class='flat required' id="group" style='width: 20em' type='text' name='group'
+	value='<patTemplate:var name="group" modifier="html8"/>'/></td>
+</tr>
+<tr class="filaListado filaImpar">
+	<td class='col1'>Perfil</td>
+	<td colspan="2"><select name='id_profile'><patTemplate:var name="optionsselectprofile" /></select></td>
+</tr>
+
+<tr class="rematetabla">
+<td ></td>
+<td colspan="4" class="btncell">
+ <input  class="btn ui-state-default ui-corner-all" value="Guardar cambios" type="submit" onclick="return ComprobarDatos()">
+ <input  class="btn ui-state-default ui-corner-all  {CSSBTNREMOVE}" value="Eliminar" type="button" onclick="Eliminar()">
+ <input  class="btn ui-state-default ui-corner-all" value="Cancelar" type="button" onclick="location.href='{MODNAME}.php'">
+</td>
+</tr>
+</table>
+
+
+</td><td>
+</td></tr>
+</table>
+
+</form>
+

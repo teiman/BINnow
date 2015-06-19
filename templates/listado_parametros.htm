@@ -1,0 +1,65 @@
+
+<patTemplate:tmpl name="list">
+<table  class="enbanner cajalistado"  cellspacing='0' cellpadding='0' >
+
+<tr class="preheader"><td colspan="4"><input type="text"  	    
+  class="buscarElementoListado  ui-corner-all"> 
+	<input type="button" value="Buscar" 
+ class="buscarElementoListadoBoton ui-state-default ui-corner-all"
+/></td></tr>
+
+
+
+<tr class="headListado">
+<th>
+&nbsp;
+</th>
+<th>
+
+<patTemplate:Translate>Parametro</patTemplate:Translate>
+
+</th><th>Valor</th>
+
+</tr>
+
+
+	<patTemplate:tmpl name="list_entry" type="oddeven">
+	<patTemplate:sub condition="__even">
+
+	<tr class="filaListado {ESTILOCSS} odd">
+	<td width="80"  class="colbtn">
+	<form method='post' class="iconoboton"><input type='hidden' name='modo' value='modificar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/editar1.gif" class="imagebotoneditar" /></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='eliminar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/basura1.gif" class="imagebotonborrar"/></form>
+	</td>
+	<td>{NAME}</td>
+	<td ><patTemplate:var name="value" modifier="html8"/></td>
+	</tr>
+	</patTemplate:sub>
+	<patTemplate:sub condition="__odd">
+	<tr class="filaListado {ESTILOCSS} even">
+	<td width="80"  class="colbtn">
+	<form method='post' class="iconoboton"><input type='hidden' name='modo' value='modificar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/editar1.gif" class="imagebotoneditar" /></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='eliminar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/basura1.gif" class="imagebotonborrar"/></form>
+	</td>
+	<td>{NAME}</td>
+	<td ><patTemplate:var name="value" modifier="html8"/></td>
+	</tr>
+
+	</patTemplate:sub>
+	</patTemplate:tmpl>
+
+<tr class="rematetabla"><td colspan="4" valign="center">
+<select  class="ui-state-default" style="font-size: 11px"  id="change-list-size"> 
+<option>10</option>
+</select>
+&nbsp;<span class="numeroPagina"><patTemplate:Translate> </patTemplate:Translate></span>
+<patTemplate:tmpl name="mininavegador" src="mininav.htm" autoload="on" parse="off" />
+</td></tr>
+
+
+</table>
+</patTemplate:tmpl>

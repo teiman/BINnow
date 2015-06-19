@@ -1,0 +1,104 @@
+
+
+
+<h3>Edicion permisos</h3>
+
+
+
+
+<div id="ui_permisos">
+
+
+    <form method='post' action='modusuarios.php'>
+        <input type="submit" value="Volver al usuario">
+        <input type="hidden" name="id" value="<patTemplate:var name="id_user_retorno" />">
+               <input type="hidden" name='modo' value='modificar'>         
+    </form>
+
+
+    <patTemplate:var name="ui_permisos" />
+
+
+
+    <div class="filtrofila">
+        Acciones sobre seleccionado:
+        <input type='button' value='Eliminar' id="eliminarSeleccionado">&nbsp;                        
+        <input type='button' value='Mover a grupo'  id="moverSeleccionado">&nbsp;        
+        <input type='button' value='Obligatorio/opcional'  id="toggleSeleccionado">&nbsp;    
+    </div>
+
+</div>
+
+<form method="post" id="form_eliminarNodo"><input type="hidden" name="id_rama" value="<patTemplate:var name="id_rama" />" ><input type="hidden" name="id_nodo" value="" id="form_eliminar_id_nodo"><input type="hidden" name="modo" value="eliminarNodo"></form>
+<form method="post" id="form_crearSubNodo"><input type="hidden" name="id_rama" value="<patTemplate:var name="id_rama" />" ><input type="hidden" name="modo" value="crearSubNodo" ><input id="form_crearSubNodo_id_padre" type="hidden" name="id_padre" value=""></form>
+<form method="post" id="form_toggleObliga"><input type="hidden" name="id_rama" value="<patTemplate:var name="id_rama" />" ><input type="hidden" name="modo" value="toggleObliga" ><input id="form_toggleObliga_id_nodo" type="hidden" name="id_nodo" value=""></form>
+
+
+
+
+<script>
+
+    $(function(){
+    
+        $("#eliminarSeleccionado").click(function(){  
+        
+        
+            if($(".ck_selector:checked").length){            
+                var ck0 = $(".ck_selector:checked")[0];
+                                   
+                if( ck0  ){
+                    var valor = $(ck0).val();                                                
+                
+                    if(valor){
+                        $("#form_eliminar_id_nodo").val(valor);                
+                        $("#form_eliminarNodo").submit();                
+                    }                                
+                } 
+                else {
+                    console.dir(ck0);
+                    console.log("no esta chequeado")
+                }
+            
+            } else {            
+                console.log("no cuentro ninguno");
+            }        
+        });
+
+        $("#moverSeleccionado").click(function(){                
+            if($(".ck_selector:checked").length){            
+                var ck0 = $(".ck_selector:checked")[0];
+            
+                if( ck0 ){
+                    var valor = $(ck0).val();                                                
+                
+                    if(valor){
+                        $("#form_crearSubNodo_id_padre").val(valor);                
+                        $("#form_crearSubNodo").submit();                
+                    }
+                }
+            }        
+        });
+
+        $("#toggleSeleccionado").click(function(){                
+            if($(".ck_selector:checked").length){            
+                var ck0 = $(".ck_selector:checked")[0];
+            
+                if( ck0 ){
+                    var valor = $(ck0).val();                                                
+                
+                    if(valor){
+                        $("#form_toggleObliga_id_nodo").val(valor);                
+                        $("#form_toggleObliga").submit();                
+                    }
+                }
+            }        
+        });
+    
+    
+    
+    
+    
+    
+    });
+
+</script>

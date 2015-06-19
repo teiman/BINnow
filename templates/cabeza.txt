@@ -1,0 +1,18 @@
+<div id="cabeza" >
+
+	{NOLOGIN}
+
+	<span id="cadenaLogueado" class="{NOLOGINCSS} caj-user">
+		<a zhref="modpanel.php"><patTemplate:Session var="user_nombreapellido" /></a>
+		<a  class="link" href="/wiki/index.php/Ayuda_<patTemplate:Session var="pagina_ayuda"/>" target="_new">Ayuda</a>
+		<a  class="link" href="logout.php"><patTemplate:T>Cerrar sesión</patTemplate:T ></a>
+	</span>
+
+	{NOLOGIN2}
+	
+	<span id="cadenaAnagrama"><a href="#" id="botonMenu" onclick="muestraMenuSimple()"><img src="<patTemplate:Session var="base_estaticos" />images/logo-head.png" ></a></span>
+	<div class="clb"></div>
+
+
+</div>
+

@@ -1,0 +1,101 @@
+<patTemplate:tmpl name="page"><!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="es"> <![endif]-->
+    <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="es"> <![endif]-->
+    <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="es"> <![endif]-->
+    <!--[if gt IE 8]><!--><html class="no-js" lang="es"> <!--<![endif]-->
+        <head>
+
+            <title>BINOW :: {TITULOPAGINA} </title>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+
+            <link href="css/dinamico.php?modo={MODNAME}&amp;extra=basica" rel="stylesheet"  type="text/css" />
+            <script src="js/dinamicojs.php?modo={MODNAME}&amp;extra=basica"></script>
+            <script src="js/paginabasica.js"></script>
+            <script src="js/tienepunto.js"></script>
+            <!--[if ie]>
+
+            <style type="text/css">
+            
+            #root {display:table;height:100%}
+            
+            body  {
+                text-align: center;
+            }
+            
+            .navegador {
+                width: 100%;
+            }
+            
+            
+            </style>
+            <![endif]-->
+            <style>
+
+            tr.filaListado:hover td { background: #fff3df!important; }
+
+            </style>
+
+        </head>
+        <body>
+
+            <div id="root">
+
+                <patTemplate:tmpl name="cabeza" src="cabeza.txt" autoload="on" parse="on"/>
+
+                <patTemplate:tmpl name="menu" src="menu.htm" autoload="on" parse="on"/>
+
+
+
+                <div id="contenedor">
+
+                    <patTemplate:tmpl name="mininavegadorimportantes" src="mininavegador.txt" autoload="on" parse="on"/>
+
+							<div class="clb"></div>
+                    <ul id="menux" class="{NOLOGINCSS}">
+                        <li ><a class="{CURRENT0}" href="{MENU_0_URL}">{MENU_0_NAME}</a></a></li>
+                        <li ><a class="{CURRENT1} {MENU_1_CSS}" href="{MENU_1_URL}">{MENU_1_NAME}</a></li>
+                        <li ><a class="{CURRENT2} {MENU_2_CSS}" href="{MENU_2_URL}">Modificar</a></li>
+                    </ul>
+
+                    <div id="cajasolapa"><!-- caja solapa -->
+
+                        <patTemplate:tmpl name="informacion" src="vacio.txt" autoload="off" parse="on"/>
+                        <patTemplate:tmpl name="edicion" src="vacio.txt" autoload="off" parse="on"/>
+                        <patTemplate:tmpl name="listado" src="vacio.txt" autoload="off" parse="on"/>
+                        <patTemplate:tmpl name="navegador" src="vacio.txt" autoload="off" parse="on"/>
+
+
+                        <div  style="height:10px">&nbsp;</div>
+
+                    </div><!-- caja solapa -->
+
+
+                </div>
+
+
+                <div class="oculto">
+
+                    <form method="post" id="filtra-list">
+                        <input type="hidden" name="modo" value="filtrar-elemento" />
+                        <input type="hidden" name="filtrar-elemento" value="" id="filtra-list-value" />
+                    </form>
+
+                </div>
+
+                <div id="extracontainer">
+                </div>
+            </div><!-- root -->
+
+
+
+
+
+        <patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+
+
+
+
+        </body>
+
+
+    </html>
+</patTemplate:tmpl>

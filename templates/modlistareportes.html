@@ -1,0 +1,94 @@
+<patTemplate:tmpl name="page">
+<!--[if IE 6]> <html class="no-js ie6 oldie" lang="es"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="es"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="es"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es"> <!--<![endif]-->
+
+<head>
+
+    <link href="css/dinamico.php?modo=modlistareportes&amp;extra=modlistareportes" rel="stylesheet"  type="text/css" />
+    <script src="js/dinamicojs.php?modo=modlistareportes&amp;extra=modlistareportes"></script>
+
+    <title>BINOW :: {TITULOPAGINA} </title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+	<script type="text/javascript">
+            var Global = {
+                novacio: true
+            };
+
+        </script>
+
+<!--[if ie]>
+<style type="text/css">
+
+body  {
+	text-align: center;
+}
+
+#root {
+ text-align:left;
+}
+
+</style>
+<![endif]-->
+
+
+        <style>
+
+</style>
+</head>
+<body>
+
+<div id="root">
+
+<patTemplate:tmpl name="cabeza" src="cabeza.htm" autoload="on" parse="on"/>
+<patTemplate:tmpl name="menu" src="menu.htm" autoload="on" parse="on"/>
+
+<div style="clear:both"></div>
+
+<div id="contenedor">
+
+<div style="text-align: left">
+
+    <div  class="cambiaModos" > <patTemplate:Auth command="modcentral/"  defecto="false"><a
+        href="modcentral.php?modo=inicia">comunicaciones</a></patTemplate:Auth> | <patTemplate:Auth command="modmapa/"  defecto="false"><a
+        href="modmapa.php">mapa</a></patTemplate:Auth> | <patTemplate:Auth command="modpanelcomv/"  defecto="false">| <a
+            href="modpanelcomv.php?modo=self">panel</a></patTemplate:Auth> <patTemplate:Auth command="modreporting/"  defecto="false">| <a
+            href="modreporting.php?modo=init">reporting</a></patTemplate:Auth>
+            <patTemplate:Auth command="modvisorreporting/"  defecto="false">| <a
+            zhref="modlistareportes.php?modo=init">lista reportes</a></patTemplate:Auth></div>
+
+
+<div id="subcontenedor">
+
+
+    <center>
+    <table border="0" align="center" id="listadoinformes">
+        <tr class="cabecera"><td>Informe</td><td>Ultima actualización</td></tr>
+        <patTemplate:tmpl name="generales">
+            <tr class="informe general <patTemplate:var name="css" />"><td class="nombre" valign="center"><a  class="deinforme" href="modvisorreporting.php?modo=loadreport&id=<patTemplate:var name="id_reporting_user_list" modifier="html8"/>"><patTemplate:var name="name" modifier="html8"/></a></td><td  align="center" class="fecha"><patTemplate:var name="fecha" modifier="html8"/>  </td></tr>
+            <tr class="relleno general <patTemplate:var name="css" />"><td colspan="2"></td></tr>
+        </patTemplate:tmpl>
+    </table>
+
+    </center>
+
+    <!--
+    'id_reporting_user_list' => '65', 'name' => '- sale 009 (para admin)',
+
+    -->
+
+</div ><!--  caja filtro y listado  -->
+
+<br style="clear:both">
+
+</div>
+
+</div>
+</div>
+
+</body>
+
+</html>
+</patTemplate:tmpl>

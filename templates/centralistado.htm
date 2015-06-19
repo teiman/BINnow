@@ -1,0 +1,147 @@
+
+<patTemplate:tmpl name="page">
+
+<div id="bloquecompleto_<patTemplate:var name="idbloque" />" >
+
+<table  class="enbanner comolineas_de_comm" border="0" cellpadding="0" cellspacing="0"  width="100%">
+<thead class="headListado">
+<tr><th colspan="2" class="cabecera ocultadorgenerico" onclick="AutoOcultar('<patTemplate:var name="idbloque" />')"><patTemplate:var name="etiqueta" /></th></tr>
+<tr>
+<th class="cabecera">
+    <form class="iconoboton" method="post">
+        <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+        <input type="hidden" name='updown' value='inbox' />
+    </form> 
+    <patTemplate:Translate>Código</patTemplate:Translate>       
+</th>   
+<th class="cabecera"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='address' />
+</form>  <patTemplate:Translate>Asunto</patTemplate:Translate></th>
+<th class="cabecera"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='date' />
+</form>  <patTemplate:Translate>Fecha</patTemplate:Translate></th>
+<th class="cabecera"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='priority' />
+</form>  <patTemplate:Translate>Prioridad</patTemplate:Translate></th>
+<th class="cabecera oculto"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='status' />
+</form>  <patTemplate:Translate>Estado</patTemplate:Translate></th>
+<th class="cabecera"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='contact' />
+</form>  <patTemplate:Translate>Contacto</patTemplate:Translate></th>
+<th class="cabecera"><form class="iconoboton" method="post">
+    <input type="hidden" name='modo' src="icons/updown2.gif" class="updown" value="updown_change" />
+    <input type="hidden" name='updown' value='group' />
+</form>  <patTemplate:Translate>Delegación</patTemplate:Translate></th>
+</tr>
+</thead>
+
+    <patTemplate:tmpl name="list_entry">
+    <tr class="bloque_<patTemplate:var name="idbloque" /> lcgenerico filaTitulo {FILACSS} {OCULTARLINEAVACIA} {PI}" id="titulo_<patTemplate:var name="id_comm" />">
+
+    <td colspan='8' class="contooltip cajatitulo" alt="{ID_COMM}" >
+    <input id="checkbox_{ID_COMM}" class='selcomm' id_comm="{ID_COMM}" type="checkbox" />
+    <A  name="solapa_<patTemplate:var name="id_comm"/>"></A>
+    <a id="a_<patTemplate:var name="id_comm"/>" class="enlaceTituloCom {CLASELEIDO} local-load" rel="#localload_<patTemplate:var name="id_comm"/>" zhref="#solapa_<patTemplate:var name="id_comm"/>" onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')" 
+    
+    title="<patTemplate:var name="title" modifier="html8"/>"
+    >
+
+<span class="idcom ztagit">
+<b class="localz">{CODCOM}</b>
+</span>
+
+<b> <patTemplate:var name="title" modifier="html8"/></b>
+    </a>
+    </td></tr>
+    
+    <tr class="bloque_<patTemplate:var name="idbloque" /> lcgenerico filaListado filaDatos {FILACSS2} {OCULTARLINEAVACIA} {PI}" id="datos_<patTemplate:var name="id_comm" />">
+
+    <td align='right'><div><div class="icns">{ICONS}</div> <patTemplate:var name="channel" modifier="html8"/>  </div></td>
+    <td><div><patTemplate:var name="from_to" modifier="html8"/></div></td>
+    <td><nobr><center><patTemplate:var name="date_cap" modifier="Fechahora"/></center></nobr></td>
+    <td><center><patTemplate:var name="priority" modifier="html8"/></center></td>
+    <td class="oculto"><center>
+<span class="tagit tagit_{STATUSCSS}">
+<b class="tagit-choice"><patTemplate:var name="status" modifier="html8"/></b>
+</span>
+</center></td>
+    <td><center><a href="modvistacliente.php?id_contact=<patTemplate:var name="id_contact" />"><patTemplate:var name="contact_name" modifier="html8"/></a></center></td>
+    <td><center><patTemplate:var name="nombredelegacion" modifier="html8" /> <patTemplate:var name="date_read" /></center></td>
+    </tr>
+    <tr class="filaAmpliadoDatos" id="precont_<patTemplate:var name="id_comm" />">
+        <td id="contenedor_<patTemplate:var name="id_comm" />" colspan='8'>     
+        
+        </td></tr>
+    <tr><td class="untooltip"><div id="localload_<patTemplate:var name="id_comm"/>"><table style="display:inline;margin:0px;padding:0px" >
+    <tr><td><div><patTemplate:var name="channel" modifier="html8"/> </div></td></tr>
+    <tr><td><div><patTemplate:var name="from_to" modifier="html8"/></div></td></tr>
+    <tr><td><div><patTemplate:var name="date_cap" modifier="Fechahora"/></div></nobr></td></tr>
+    <tr><td><div><patTemplate:var name="priority" modifier="html8"/></div></td></tr>
+    <tr><td><z><patTemplate:var name="status" modifier="html8"/></z></td></tr>
+    <tr><td><span class="nombrecliente"><patTemplate:var name="contact_name" modifier="html8"/></span></td></tr>
+    <tr><td><z><patTemplate:var name="group" /> <patTemplate:var name="date_read" /></z></td></tr>
+    </table>
+    
+    </div></td></tr>
+
+
+    </patTemplate:tmpl>
+
+    <tr  class="filaListado filaDatos {OCULTARMENSAJELINEAVACIA}">
+    <td colspan="8">
+    <p class='mensajeListaVacia'><patTemplate:T>No hay comunicaciones</patTemplate:T></p>
+    </td>
+    </tr>
+
+</table>
+
+<table style="background-color: #eee" class="bloque_<patTemplate:var name="idbloque" /> lcgenerico comocajafiltros2">
+<tr class="fixforms">
+<td>
+<div id="inforesultadoslistado"></div>
+</td><td>
+<div>
+<center>
+<a
+    class="enlacegenerico"
+
+    name="maslineas"
+    href="#maslineas"
+    onclick="return MasLineas()"
+    >M&aacute;s l&iacute;neas</a>
+</center>
+</div>
+
+</td><td align="right"> 
+
+<form method='post' action='modcentral.php' name='resultados_pagina2'>
+<patTranslate:Translate>Filas:</patTranslate:Translate>
+<input type="hidden" name="modo" value="resultados_pagina" />
+<select class="zui-state-default" id="" name="tipo_resultadospagina" onchange="resultados_pagina2.submit()">
+<option></option>
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+<option>30</option>
+<option>50</option>
+<option>75</option>
+<option>100</option>
+</select>
+</form>
+</td>
+</table>
+
+
+
+<br />
+
+</div>
+
+</patTemplate:tmpl>

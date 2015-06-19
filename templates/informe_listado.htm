@@ -1,0 +1,181 @@
+
+
+<patTemplate:tmpl name="list">
+
+
+
+<table  class="enbanner cajalistado"  cellspacing='0' cellpadding='0' >
+<tr>
+<td colspan='2'>
+	<select id="esListas" name="esListas" onchange="ActualiarCamposVisibles()">
+	<option></option>
+		{OUTITEMS}
+	</select>
+
+	<input   class="btn"  type='button' value=" Listar " onclick="CambiaListado()"/>
+
+</td>
+</tr>
+<tr  style="display: none;" class="paramdatos" id="getDesde">
+  <td>Desde:</td><td valign="center"> <input id="Desde" type="text" name="desde" class="fecha flat"  value="{HOY}"/>
+  <img id='ResdesdeTrig' src='img/calendar-up.gif' align="absmiddle" class="oculto" />
+  </td>
+</tr>
+<tr  style="display: none;" class="paramdatos" id="getHasta">
+  <td>Hasta:</td><td> <input id="Hasta" type="text" name="hasta" class="fecha flat"  value="{HOY}"/>
+  <img id='ReshastaTrig' src='img/calendar-up.gif' align="absmiddle" class="oculto" />
+  </td>
+</tr>
+<tr  style="display: none;" class="paramdatos" id="getIdDelegacion">
+<td>Delegación:</td>
+<td>
+	<select id="IdDelegacion" name="IdDelegacion">
+	{COMBODELEGACIONES}
+	</select>
+</td>
+</tr>
+
+<tr style="display: none;" class="paramdatos" id="getIdEstado">
+<td>Estado pedido:</td>
+<td>
+	<select name="IdEstado" id="IdEstado">
+	{COMBOESTADOPEDIDOS}
+	</select>
+</td>
+</tr>
+
+<tr style="display: none;" class="paramdatos" id="getCodCliente">
+<td>Cod Cliente:</td>
+<td> <input id="CodCliente"  class='flat'  type="text" name="CodCliente" class="codigo"  value="" style="width: 8em"/>
+</td>
+</tr>
+
+
+</table>
+
+
+
+<iframe class="maximoRazonable" style="height: 400;border:1px solid gray;background-color: white" border='0' name='webarea' id='webarea'>
+</iframe>
+
+
+
+
+
+
+<script>
+
+function CambiaListado() {
+	var idlista 	= $("#esListas").val();
+	var $web 	= $("#webarea");
+	var url = "listado.php?id="+idlista+
+		"&Desde="+$("#Desde").val() +
+		"&Hasta="+$("#Hasta").val() +
+		"&IdDelegacion="+$("#IdDelegacion").val()+
+		"&Estado="+$("#Estado").val()+
+        "&IdEstado="+$("#IdEstado").val()+
+		"&CodCliente="+$("#CodCliente").val()+
+		"&r=" + Math.random();
+
+	$web.attr("src", url) ;
+}
+
+function Mostrar( idmostrar){
+	var $this = $("#get"+ idmostrar );
+
+	if ( $this.length ){
+		$this.show();
+	}
+}
+
+function SetActive( val ){
+	if(!val) return;
+
+	$(".paramdatos").hide();
+
+	var str = new String(val);
+	var dinterface = str.split(",");
+
+	for(var t=0;t<dinterface.length;t++){
+		var valor = "#get" + dinterface[t];
+		if ($(valor).length ){
+			$(valor).show();
+		} else{
+			//console.log("valor:"+valor+",no encontrado");
+		}
+	}
+
+}
+
+
+function ActualiarCamposVisibles(){
+	var key = $("#esListas").val();
+
+	var filtro = activos[key];
+
+	SetActive( filtro );
+}
+
+
+var activos = new Array();
+
+{FILTROS}
+
+
+
+function Volver(){
+	location.href="modmapa.php";
+	//history.go(-1);
+}
+
+
+function postCarga(){
+	$.getScript('js/ui/jquery.ui.core.js',function(){
+		$.getScript('js/ui/jquery.ui.widget.js',function(){
+			$.getScript('js/ui/jquery.ui.datepicker.js',function(){
+
+				$.datepicker.regional['es'] = {
+					closeText: 'Cerrar',
+					prevText: '&#x3c;Ant',
+					nextText: 'Sig&#x3e;',
+					currentText: 'Hoy',
+					monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+					'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+					monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+					'Jul','Ago','Sep','Oct','Nov','Dic'],
+					dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
+					dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
+					dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
+					dateFormat: 'dd-mm-yy', firstDay: 1,
+					isRTL: false};
+
+				$.datepicker.setDefaults($.datepicker.regional['es']);
+				$(".fecha").datepicker();
+			});
+		});
+	});
+
+    $("head").append("<link>");
+    var css = $("head").children(":last");
+    css.attr({
+      rel:  "stylesheet",
+      type: "text/css",
+      href: "css/smoothness/jquery-ui-1.8.1.custom.css"
+    });
+
+
+}
+
+</script>
+
+<style>
+
+/* parchea un problema que hace que se renderice mal el datepicker */
+.ui-datepicker-next, .ui-datepicker-prev {
+  display: inline-block!important;
+}
+
+</style>
+
+
+</patTemplate:tmpl>

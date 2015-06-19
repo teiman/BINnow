@@ -1,0 +1,13 @@
+
+
+<span style="position:relative;top: 4px">
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='navto' /><input type='hidden' name='offset' value='0' />
+		<input type="image" src="img/navfirst.gif" class="imagebotonnavfist {FIRSTDISABLEDHTML}"/></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='navto' /><input type='hidden' name='offset' value='{PAGANTERIOR}' />
+		<input type="image" src="img/navprev.gif" class="imagebotonnavfist {ANTDISABLEDHTML}"/></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='navto' /><input type='hidden' name='offset' value='{PAGSIGUIENTE}' />
+		<input type="image" src="img/navnext.gif" class="imagebotonnavfist {SIGDISABLEDHTML}"/></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='navlast' />
+		<input type="image" src="img/navlast.gif" class="imagebotonnavfist {LASTDISABLEDHTML}"/></form>
+</span>
+

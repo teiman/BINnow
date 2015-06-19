@@ -1,0 +1,86 @@
+
+
+
+<patTemplate:tmpl name="list">
+<h3 class="h3-tit-gest">Gestión Usuarios</h3>
+<table  class="enbanner cajalistado stripeMe"   cellspacing='0' cellpadding='0'  >
+<tr class="preheader"><td colspan="6"><input type="text"  	    
+  class="buscarElementoListado  ui-corner-all"> 
+	<input type="button" value="Buscar" 
+
+ class="buscarElementoListadoBoton ui-state-default ui-corner-all" /></td></tr>
+
+<tr class="headListado">
+<th>
+&nbsp;
+</th>
+<th>
+<patTemplate:Translate>Nombre</patTemplate:Translate>
+</th>
+<th>
+<patTemplate:Translate>Email</patTemplate:Translate>
+</th>
+<th>
+<patTemplate:Translate>Teléfono</patTemplate:Translate>
+</th>
+<th>
+<patTemplate:Translate>Identificador</patTemplate:Translate>
+</th>
+<th></th>
+</tr>
+
+
+	<patTemplate:tmpl name="list_entry" type="oddeven">
+	<patTemplate:sub condition="__even">
+	<tr class="filaListado {ESTILOCSS} odd">
+	<td width="80" class="colbtn">
+	<form method='post' class="iconoboton"><input type='hidden' name='modo' value='modificar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/editar1.gif" class="imagebotoneditar" /></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='eliminar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/basura1.gif" class="imagebotonborrar"/></form>
+	</td>
+        <td width="15%"><patTemplate:var name="s_name1" modifier="html8"/> <patTemplate:var name="s_name2" modifier="html8"/></td>
+        <td zwidth="15%"><nobr><patTemplate:var name="s_email" modifier="html8"/></nobr></td>
+        <td zwidth="15%"><patTemplate:var name="s_phone" modifier="html8"/></td>
+        <td zwidth="15%"><patTemplate:var name="s_user_login" modifier="html8"/></td>
+        <td width="40%"> </td>
+
+	</tr>
+	</patTemplate:sub>
+	<patTemplate:sub condition="__odd">
+	<tr class="filaListado {ESTILOCSS} even">
+	<td width="80" class="colbtn">
+	<form method='post' class="iconoboton"><input type='hidden' name='modo' value='modificar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/editar1.gif" class="imagebotoneditar" /></form>
+	<form method='post'  class="iconoboton"><input type='hidden' name='modo' value='eliminar' /><input type='hidden' name='id' value='{ID}' />
+		<input type="image" src="icons/basura1.gif" class="imagebotonborrar"/></form>
+	</td>
+        <td width="15%"><patTemplate:var name="s_name1" modifier="html8"/> <patTemplate:var name="s_name2" modifier="html8"/></td>
+        <td zwidth="15%"><nobr><patTemplate:var name="s_email" modifier="html8"/></nobr></td>
+        <td zwidth="15%"><patTemplate:var name="s_phone" modifier="html8"/></td>
+        <td zwidth="15%"><patTemplate:var name="s_user_login" modifier="html8"/></td>
+        <td width="40%"> </td>
+	</tr>
+	</patTemplate:sub>
+
+
+
+	</patTemplate:tmpl>
+<tr class="rematetabla"><td colspan="6" valign="center">
+
+<select  class="ui-state-default" style="font-size: 11px" id="change-list-size"> 
+<option>10</option>
+</select>
+
+
+
+
+&nbsp;<span class="numeroPagina"><patTemplate:Translate> </patTemplate:Translate></span>
+
+<patTemplate:tmpl name="mininavegador" src="mininav.htm" autoload="on" parse="off" />
+
+</td></tr>
+</table>
+
+</patTemplate:tmpl>
+

@@ -1,0 +1,226 @@
+<patTemplate:tmpl name="page">
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/dinamico.php?modo=modreporting&amp;extra=" rel="stylesheet"  type="text/css" />
+<!--    <link href="css/reporting_jq.css" rel="stylesheet"  type="text/css" />
+    -->
+    <link href="css/reporting_style.css" rel="stylesheet"  type="text/css" />
+
+    <script src="js/dinamicojs.php?modo=modreporting&amp;extra=modreporting"></script>
+    <script src="js/jquery.tablesorter.js"></script>
+    
+    <script src="js/ui/jquery.ui.core.js" ></script>
+    <script src="js/ui/jquery.ui.draggable.js"></script>
+    <script src="js/ui/jquery.ui.droppable.js"></script>
+    <script src="js/ui/jquery.ui.button.js"></script>
+    <script src="js/ui/jquery.ui.datepicker.js"></script>
+    <script src="js/ui/jquery.ui.mouse.js"></script>
+
+    <link href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet"  type="text/css" />
+
+    <!-- <script src="js/jquery.corners.js"></script> -->
+    <script src="js/jquery.corner.js"></script>
+<!--    <script src="js/jquery.sorttable.js"></script> -->
+
+    <script src="js/D_RESUMEN_DATOS_definiciones.js"></script>
+
+<script>
+    var tablaOriginal;
+    var po_recargar = "El informe ha cambiado, recargar";
+    var po_cargando = "Cargando...";
+    var po_enviando = po_cargando;
+    var po_entrenombreinforme = "Entre un nombre para guardar estos ajustes";
+
+    //gestion de filtros
+    var filtros = {
+        _enUso: [<patTemplate:tmpl name="list_columnas_js">"{TIPO}",</patTemplate:tmpl>""],//columnas visibles
+        _agruparLista: [<patTemplate:tmpl name="list_agrupar_js">"{TIPO}",</patTemplate:tmpl>""], //agrupar por
+        _subtotalLista: [<patTemplate:tmpl name="list_subtotal_js">"{TIPO}",</patTemplate:tmpl>""],//subtotales por
+        _filtrosLista: [<patTemplate:tmpl name="list_filtros_js">"{TIPO}",</patTemplate:tmpl>""],//filtrando esto..
+        _filtrosListaParam: [<patTemplate:tmpl name="list_filtros_param_js">
+                <patTemplate:tmpl unusedvars="ignore">{</patTemplate:tmpl>
+                "tipo":"{TIPO}",
+                "param1":"{PARAM1}"
+                <patTemplate:tmpl unusedvars="ignore">}</patTemplate:tmpl>,</patTemplate:tmpl>{"tipo":false,"param1":false}],//filtrando esto..
+       "version":1
+    };
+
+    var ventana = {
+       "version":1,
+       necesitaRecargarPagina:false //necesita recargar toda la pagina
+    };
+
+
+    //$(function() {
+    $(document).ready(function() {
+        hacerDropable();
+        var hayAutoEnviar = {AUTOENVIO}0;
+
+
+        if (hayAutoEnviar){
+            //console.log("Autolanzando calculo de listado");
+            //console.log(filtros.getSubtotal());
+
+            ventana.muestraListado();
+        }
+    });
+
+</script>
+
+
+  </head>
+<body>
+	<div class="wrapper">
+		<div id="root">
+			<patTemplate:tmpl name="cabeza" src="cabeza.htm" autoload="on" parse="on"/>
+			<div class="clb"></div>
+			<div id="contenedor">
+				<a href="#afcarga" id="focuscarga"></a>
+    
+    <div  class="cambiaModos" >Vista:</b><!-- <a href="modmapa.php?modo=mapa">mapa</a> |--> 
+	<a
+        href="modcentral.php?modo=inicia">comunicaciones</a><!-- | <a
+        href="modvistacliente.php?modo=inicia">cliente</a>--> | <a
+            href="modpanelcomv.php?modo=self">panel</a> </div>
+			
+		
+
+    <div class="clb"></div>
+
+    
+    <table style="width:100%" id="solucionesfiltros">
+        <tr>
+        <td width="236" valign="top" class="auxiliarsincolumnas">
+        <h1  style="position:Relative;top:-4px;margin:0px;padding:0px"><img src="img/mis_informes.png" hspace="5" align="absmiddle" style="width:20px;height:20px" />Mis informes </h1>
+	<ul id="listaReportesUsuario">
+            <patTemplate:tmpl name="lista_reporting">
+            <li><a href="modreporting.php?modo=loadreport&id=<patTemplate:var name="id_reporting_user_list" />"><patTemplate:var name="name" modifier="html8"/></a></li>
+            </patTemplate:tmpl>
+	</ul>
+             
+        <input id="salvareporte" type="image" src="images/nuevoinforme.png" value="Nuevo informe" class="butonizar" style="margin-left: 17px" />
+        
+
+            </td><td  valign="top">
+<!-- ---------------- -->
+                <table width="100%">
+                    <tr  id="filtrosagrupados_caja" ><td valign="top" width="200"  ><h3>Agrupar por:</h3></td>
+                        <td valign="top"><div id="filtrosagrupados" class="receptor ragrupados">&nbsp;</div></td></tr>
+                    <tr  id="filtrosubtotales_caja"><td valign="top"><h3>Subtotales:</h3></td>
+                        <td valign="top" ><div id="filtrosubtotales" class="receptor">&nbsp;</div></td></tr>
+                    <tr  id="filtrosfiltros_caja" ><td valign="top"><h3>Filtrar por:</h3></td>
+                        <td valign="top"><div id="filtrosfiltros" class="receptor">&nbsp;</div></td></tr>
+                    <tr id="sinfiltros_caja"><td valign="top"  colspan="3" class="nobr">
+                                <input id="botonRecargarVoluntario" style="width:300px;float:left" type="button" value="El informe ha cambiado, recargar" onclick="ventana.muestraListado()" class="oculto" />
+                                <span style="float:right">                                   
+                                
+                                <input id="accion_guardar" type="image" src="images/guardar1.png"  value="&nbsp; &nbsp; &nbsp; Guardar" class="butonizar">
+                                <input type="image" src="images/imprimir1.png"  value="Imprimir" class="butonizar">
+                                <input type="image" src="images/email.png"  value="Email" class="butonizar">
+                                <input type="image" src="images/excel.png" value="Excel" class="butonizar">
+                                </span>
+                        </td></tr>
+                </table>
+<!-- ----------------- -->
+            </td>
+        </tr>
+    </table>
+       
+<div style="text-align: left"><div class="oculto">
+
+      <form method="post" action="modreporting.php" id="reporting">
+
+          <input type="hidden" name="modo" value="cogedatos" id="modoform">
+          <input type="hidden" name="columnas"  id="icolumnas" value="<patTemplate:tmpl name="list_columnas_data">"{TIPO}",</patTemplate:tmpl>">
+          <input type="hidden" name="agrupamientos"   id="iagrupamientos" value="<patTemplate:tmpl name="list_agrupamientos_data">"{TIPO}",</patTemplate:tmpl>">
+          <input type="hidden" name="filtros"  id="ifiltros" value="<patTemplate:tmpl name="list_filtros_data">"{TIPO}",</patTemplate:tmpl>">
+          <input type="hidden" name="subtotales"  id="isubtotales" value="<patTemplate:tmpl name="list_subtotal_data">"{TIPO}",</patTemplate:tmpl>">
+          <input type="hidden" name="nombre_para_informe" value="" id="nombre_para_informe" >
+
+      </form>
+    </div><table width="100%" border="0" style="width:100%" cellpadding="0" cellspacing="0">
+        <tr><td valign="top" id="colpaleta">
+
+                <input type="text" id="buscacampo" />
+                <ul id="paleta" style="margin:4px;">
+                    
+                    
+                </ul>
+
+
+
+            </td>
+
+            <td id="control" class="control_ampliado"></td>
+
+            <td valign="top" style="overflow:scroll">
+                
+    <div id="contenedorcajaresultados">
+        this is a test
+
+      <table id="tablaresultados" class="tablesorter droppable" style="margin:0px" border="0" cellpadding="0" cellspacing="1">
+          <thead>
+              <tr id="lista_columnas">
+                  <patTemplate:tmpl name="list_columnas">
+                  <th class="nobr cajacabeza_columna"><a class="cabeza_columna" id="cabeza_{ID}" rel="D_RESUMEN_DATOS_{ID}"><patTemplate:var name="tipo" /></a> &nbsp; &nbsp; </th>
+                  </patTemplate:tmpl>
+              </tr>
+          </thead>
+          <tbody id="pad-1" style="border:3px solid red;height: 100px;">
+              <tr><td>test</td></tr>
+          </tbody>
+          <tbody id="cajaderesultados">              
+              <tr><td align="center" colspan="{NUMCOLUMNAS}" id="mensajecargando"></td> </tr>
+          </tbody>
+          <tbody id="cajaderesultados_subtotales">
+              <tr><td align="center" colspan="{NUMCOLUMNAS}" id="mensajecargando_subtotales"></td> </tr>
+          </tbody>
+          <tbody id="pad-2">
+              <tr></tr>
+          </tbody>
+      </table>
+
+
+
+
+    </div>
+
+            </td></tr>
+    </table>
+
+
+
+    <input type="button" value="Recargar listado" onclick="ventana.muestraListado()" />
+
+          <pre>
+        <patTemplate:var name="sql" modifier="html8"/>
+      </pre>
+
+    
+<div style="margin:6px" />&nbsp;</div>
+
+
+<style type="text/css">
+
+
+
+</style>
+
+
+    </div></div></div></div>
+	
+		<div class="push"></div>
+		<div class="clb"></div>
+	</div>
+	</div>
+	<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+
+</body>
+</html>
+	
+
+</patTemplate:tmpl>

@@ -1,0 +1,235 @@
+
+
+
+<style>
+
+.dir_prohibe {
+ color: #944;
+}
+
+.dir_permite {
+
+ color: #191;
+}
+
+</style>
+
+
+<h3 class="h3-tit-gest">Gestión de Perfiles</h3>
+<table class="cajaedicion"  cellspacing='0' cellpadding='0' >
+<tr>
+<td valign='top'>
+
+<form action='{MODNAME}.php' method='post'  id="validateMe">
+
+<input type='hidden' name='modo' value='{MODOEDICION}' />
+<input type='hidden' name='id_profile' value='{ID_PROFILE}' />
+
+<table width='100%'>
+<thead class="headListado">
+<th colspan="3" ><patTemplate:var name="modoediciontxt" modifier="html8"/></th></thead>
+
+<tr class="filaListado filaImpar">
+	<td class="col1"><patTemplate:T>Nombre perfil</patTemplate:T> *</td>
+	<td colspan="2"><input  class='flat required' id="name" style='width: 20em' type='text' name='name'
+	value='<patTemplate:var name="name" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="filaListado filaPar">
+<td class="col1"></td><td colspan="2">
+	<table width='100%' class="noborders {HAYFILAS} perseus">
+	<patTemplate:tmpl name="list_entry">
+	<tr class="filaListado {ESTILOCSS} {HAYFILAS} android">
+	<td width="80" class="colbtn">
+
+		<input type="image"
+			src="icons/editar1.gif"
+			class="imagebotoneditar"
+			onclick="EditarRegla(<patTemplate:var name="id_allowdisallow" />,'<patTemplate:var name="path" />','<patTemplate:var name="way" />');return false;" />
+		<input src="icons/basura1.gif" class="imagebotonborrar" type="image" onclick="EliminarRegla(<patTemplate:var name="id_allowdisallow" />);return false" />
+
+	</td>
+	<td colspan="1"> <b class='dir_<patTemplate:var name="way" modifier="html8"/>'><patTemplate:var name="way" modifier="html8"/>: &nbsp; <patTemplate:var name="path" modifier="html8"/> </b></td>
+        <td>&nbsp; <b><patTemplate:var name="permiso" modifier="html8"/></b></td>
+	</tr>
+	</patTemplate:tmpl>
+	<tr class="filaListado">
+	</tr>
+	</table>
+	<input class="ui-state-default ui-corner-all <patTemplate:var name="ocultar_campos" />" type="button" value="<patTemplate:T>Añadir regla personalizada</patTemplate:T>" onclick="ShowAddRule()">
+</td>
+</tr>
+
+<tr class="filaListado filaImpar">
+	<td class="col1"></td>
+	<td colspan="2"><input  class='flat' id="esgrupo" type='checkbox' name='isgroupprofile'
+	<patTemplate:var name="isgroupprofile" modifier="checkbox" />  /><patTemplate:T>es perfil de grupo</patTemplate:T> </td>
+</tr>
+
+<tr class="rematetabla">
+<td class="btncell"></td>
+<td colspan="3" class="btncell">
+ <input  class="btn ui-state-default ui-corner-all" value="Guardar cambios" type="submit" onclick="return ComprobarDatos()">
+ <input  class="btn ui-state-default ui-corner-all  {CSSBTNREMOVE}" value="Eliminar" type="button" onclick="Eliminar()">
+ <input  class="btn ui-state-default ui-corner-all" value="Cancelar" type="button" onclick="location.href='{MODNAME}.php'">
+</td>
+</tr>
+
+</table>
+</form>
+
+	<div style="display: none" id="caja_alta_rule" class="<patTemplate:var name="ocultar_campos" />">
+	<form method="post" action="{MODNAME}.php">
+	<input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<input type="hidden" name="modo" value="newrule" />
+	<table>
+	<thead class="headListado"><th colspan="2">Nuevo regla</th></thead>
+	<tr><td><input type="text" name="path" style="width: 300px"/></td></tr>
+	<tr><td ><input type="radio" name="allow" value="allow"/> Allow<br><input type="radio" name="allow" value="disallow"/> Disallow</td>
+	<td  class="colbtn">
+		<input class="ui-state-default ui-corner-all" type="submit" value="Añadir" />
+	</td></tr>
+	</table>
+	</form>
+	<patTemplate:var name="info1" />
+	</div>
+
+	<div style="display: none" id="caja_edicion_rule" class="<patTemplate:var name="ocultar_campos" />">
+	<hr />
+	<form method="post" action="{MODNAME}.php">
+
+	<input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<input type="hidden" name="modo" value="editrule" />
+	<input id="edit_id_allowdisallow" type="hidden" name="id_allowdisallow" value="0" />
+	<table>
+	<thead class="headListado"><th colspan="2">Editar regla</th></thead>
+	<tr><td><input class="" type="text" name="path" style="width: 300px" id="path_edicion"/></td></tr>
+	<tr><td><input type="radio" name="allow2" value="allow" id="edit_rule_allow"/> Allow<br>
+		<input type="radio" name="allow2" value="disallow"  id="edit_rule_disallow" /> Disallow</td>
+	<td  class="colbtn">
+		<input class="ui-state-default ui-corner-all"  type="submit" value="Guardar cambios" />
+	</td></tr>
+	</table>
+	</form>
+        </div>
+
+	<div id="caja_alta_forzada_rule" class="<patTemplate:var name="ocultar_campos" />">
+	<form method="post" action="{MODNAME}.php">
+	<input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<input type="hidden" name="modo" value="newrule" />
+	<table>
+	<thead class="headListado"><th colspan="2">Añadir regla permite</th></thead>
+	<tr><td><input type="text" name="path" style="width: 300px"/><input type="radio" name="allow" value="allow" checked='checked'/> Permite</td>
+		<td  class="colbtn"><input class="ui-state-default ui-corner-all" type="submit" value="Añadir" />
+	</td></tr>
+	</table>
+	</form>
+	</div>
+
+
+	<div id="caja_alta_rule_super" class="<patTemplate:var name="ocultar_campos" />">
+	<form method="post" action="{MODNAME}.php">
+	<input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<input type="hidden" name="modo" value="newrule" />
+	<table>
+	<thead class="headListado"><th colspan="2">Nuevo regla desde lista</th></thead>
+	<tr><td>
+        <select name="path" style="width: 300px"/>
+        {POSIBLES}
+        </select>
+        </td></tr>
+	<tr><td ><input type="radio" name="allow" value="allow" checked='checked'/> Allow<br><input type="radio" name="allow" value="disallow"/> Disallow</td>
+	<td  class="colbtn">
+		<input class="ui-state-default ui-corner-all" type="submit" value="Añadir" />
+	</td></tr>
+	</table>
+	</form>
+
+	</div>
+
+
+    	<div id="caja_renombrarrule" class="<patTemplate:var name="ocultar_campos" />">
+	<form method="post" action="{MODNAME}.php">
+	<input type="hidden" name="modo" value="renombrar" />
+        <input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<table>
+	<thead class="headListado"><th colspan="2">Renombrar regla para todos</th></thead>
+	<tr><td>
+
+Viejo: <input type="text" name="old" style="width:300px"><br>
+Nuevo: <input type="text" name="new" style="width:300px">
+
+        </td></tr>
+	<tr><td ></td>
+	<td  class="colbtn">
+		<input class="ui-state-default ui-corner-all" type="submit" value="Renombrar" />
+	</td></tr>
+	</table>
+	</form>
+
+	</div>
+
+
+
+	</div>
+
+
+
+</td><td>
+</td></tr>
+</table>
+
+<form id="delete_rule" method="post" action="{MODNAME}.php">
+	<input type="hidden" name="id_profile" value="{ID_PROFILE}" />
+	<input type="hidden" name="modo" value="deleterule" />
+	<input id="delete_id_allowdisallow" type="hidden" name="id_allowdisallow" value="0" />
+</form>
+
+<script>
+
+function EliminarRegla(id_allowdisallow ){
+	$("#delete_id_allowdisallow").val(id_allowdisallow);
+	$("#delete_rule").submit();
+}
+
+function EditarRegla(id_allowdisallow, path, way){
+	$("#path_edicion").val(path);
+	$("#edit_id_allowdisallow").val(id_allowdisallow);
+	//var var_name = $("input[@name=allow2]:checked").val();
+
+	switch(way){
+		case "a":
+			$("#edit_rule_allow").attr("checked","checked");
+			$("#edit_rule_disallow").removeAttr("checked");
+			break;
+		case "d":
+			$("#edit_rule_disallow").attr("checked","checked");
+			$("#edit_rule_allow").removeAttr("checked");
+
+			break;
+	}
+
+
+	$("#caja_alta_rule").hide();
+	$("#caja_edicion_rule").show();
+
+}
+
+function ShowAddRule(){
+	$("#caja_alta_rule").show();
+	$("#caja_edicion_rule").hide();
+}
+
+
+$(function(){
+	$("#caja_edicion_rule").hide();
+	$("#caja_alta_rule").hide();
+});
+
+
+
+</script>
+
+
+
+

@@ -1,0 +1,554 @@
+
+<patTemplate:tmpl name="page">
+<!--[if IE 6]> <html class="no-js ie6 oldie" lang="es"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="es"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="es"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es"> <!--<![endif]-->
+
+<head>
+
+    <link href="css/dinamico.php?modo=modcentral&amp;extra=panel" rel="stylesheet"  type="text/css" />
+    <script src="js/dinamicojs.php?modo=modcentral&amp;extra=panel"></script>
+    
+    <title>BINOW :: {TITULOPAGINA} </title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link href='http://fonts.googleapis.com/css?family=Dosis:500' rel='stylesheet' type='text/css'>
+
+	<script type="text/javascript">
+
+                var Global = {/*
+                        objeto global
+                    */};
+                                
+            /*
+            if(typeof Global ==
+                "undefined"  ) {
+
+            }*/
+
+            var po_gb_recepcionllamada = "<patTemplate:T>Recepción de llamada</patTemplate:T>";
+            var po_gb_enviocorreo = "<patTemplate:T>Envio de correo</patTemplate:T>";
+            var po_gb_enviofax = "<patTemplate:T>Envio de fax</patTemplate:T>";
+            var po_gb_recepcion_realizada = "<patTemplate:T>Recepción realizada</patTemplate:T>";
+
+            var MasLineas;
+
+            if(typeof MasLineas =="undefined"){
+                MasLineas = {novacio:true};
+            }
+
+            
+            $(function() {
+                MasLineas.num_lineas	= '<patTemplate:var name="num_lineas"/>';
+                MasLineas.last_id_comm	= '<patTemplate:var name="last_id_comm"/>';//en listados ordenados, indica el id mas bajo visto
+                MasLineas.offset		= 0;//por defecto no hay offset, en listados desordenados, indica el offset de pagina
+                MasLineas.paginasize	= '<patTemplate:var name="paginasize"/>';//tamaño de pagina
+                MasLineas.listadodesordenado = <patTemplate:var name="desordenado"/>;//indica si se ordenan de forma numerica descendiente o no
+            });
+
+            Global.autofiltra_tipo_idlabel = <patTemplate:var name="autofiltra_tipo_idlabel"/>;
+            Global.id_task = <patTemplate:var name="id_task_actual"/>;
+            Global.id_task_incidencias = <patTemplate:var name="id_task_incidencias"/>;
+            Global.id_estado_abierto = 18;//TODO:coger del servidor
+            Global.id_estado_recibido = 22;//TODO:coger del servidor
+            Global.id_autoabrir =  <patTemplate:var name="id_autoabrir"/>;
+            Global.incidencia_id_status_cerrada = 21;
+            Global.incidencia_id_status_eliminada = 24;
+            Global.gransuma = <patTemplate:var name="gransuma"/>;
+            Global.filtroAdmin = <patTemplate:var name="filtroadmin"/>;
+
+        </script>
+
+<style type="text/css">
+
+{CUSTOMIZACSS}
+
+</style>
+
+
+</head>
+<body>
+	<div class="wrapper">
+		<div id="root">
+			<patTemplate:tmpl name="cabeza" src="cabeza.htm" autoload="on" parse="on"/>
+			<patTemplate:tmpl name="menu" src="menu.htm" autoload="on" parse="on"/>
+			<div id="contenedor">
+				<div> 
+				<div  class="cambiaModos" ><patTemplate:Auth command="modcentral/"  defecto="false">
+					<a zhref="modcentral.php?modo=inicia">comunicaciones</a></patTemplate:Auth> <patTemplate:Auth command="modmapa/"  defecto="false">
+					<a href="modmapa.php">mapa</a></patTemplate:Auth> <patTemplate:Auth command="modpanelcomv/"  defecto="false">
+					<a href="modpanelcomv.php?modo=self">panel</a></patTemplate:Auth> <patTemplate:Auth command="modreporting/"  defecto="false">
+					<a href="modreporting.php?modo=init">reporting</a></patTemplate:Auth> <patTemplate:Auth command="modvisorreporting/"  defecto="false">
+					<a href="modlistareportes.php?modo=init">lista reportes</a></patTemplate:Auth>
+				</div>
+				<div id="hueco_para_cliente"> </div>
+				
+				<div class="caj-pest">
+					<ul id="menux" class="">
+						<li class="mmd oculto" ><a  title="" class="{CURRENT00}" href="modcentral.php?modo=cambio_filtrotask&id_task=-1"><patTemplate:Translate>Sin clasificar</patTemplate:Translate></a></li>
+						<li class="mm0"><a title="{MENU_FULL_0}" class="{CURRENT0}" href="{MENU_0_URL}">{MENU_0_TXT}</a></li>
+						<li class="mm1"><a title="{MENU_FULL_1}" class="{CURRENT1}" href="{MENU_1_URL}">{MENU_1_TXT}</a></li>
+						<patTemplate:Auth command="modnocanal/" defecto="false"><li class="mmx"><a title="Ordenes"  class="" href="modnocanal.php">Ordenes</a></li></patTemplate:Auth>
+						<patTemplate:Auth command="moddocumental/" defecto="false"><li class="mmx"><a title="Canal Documental"  class="" href="moddocumental.php">Documentos</a></li></patTemplate:Auth>
+					</ul>
+				</div>
+				
+				<div id="bannerdelegacion" class="caj-ttl estado_{COLORDELEGACION}">
+					<!--<nobr> -->
+					<div id="estadoDelegacion" class="caj-estd">
+						<patTemplate:Auth command="modcentral/cambiarColorDelegacion"  defecto="false">
+						<form method="post" id="formcolordelegacion" action="modcentral.php"  class="{CAMBIANDOESTADODELEGACION}">
+							Estado:
+							<input type="hidden" name="modo" value="cambiandocolordelegacion">
+							<input type="hidden" name="id_delegacion" value="{IDDELEGACION}">
+							<select id="seleccionDelegacion"  name="color">
+							<option value="" {CC1}>Otro estado...</option><option value="Rojo" {CC2}>Rojo</option><option value="Naranja" {CC3}>Naranja</option><option {CC4} value="Verde">Verde</option></select>
+						</form>
+						</patTemplate:Auth>
+					</div>
+					<!--</nobr> -->
+					<div id="identificacionDelegacion" class="granAviso"><patTemplate:var name="delegaciontxt"   modifier="html8" /></div>
+				</div>
+				<div class="clb"></div>
+				
+				<div id="marcoencuadra">
+					<div class="oculto" id="gui_nuevosmensajes"><button onclick="document.location='modcentral.php?r='+Math.random()">Hay nuevos mensajes o cambios de estado</button></div>
+<div id="cajafiltros">
+	<div class="fixforms">
+		<form action="modcentral.php" method="post" class="lin reload">
+			<input type='image' value="Recargar" src="<patTemplate:Session var="base_estaticos" />images/reload.png" title="<patTemplate:Translate>Recargar</patTemplate:Translate>" />
+		</form>
+		<div class="caj-flt">
+			<label class="lbl"><patTemplate:T>Filtrar:</patTemplate:T></label>
+			<form method="post" action="modcentral.php" style="display:inline" id="buscadniform" class="oculto">
+				<input type="hidden" name="modo" value="buscar_concreto_dni" />
+				<label for="buscadni" class="lbl">DNI</label>
+				<input class="idcomm prebuslupa" type="text" name="buscadni" id="buscadniinput"><!--
+				--><input title="<patTemplate:T>Buscar</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/find.png" name="busca_dni" value="<patTemplate:T>Buscar</patTemplate:T>" class="buslupa"><!--
+				--><input title="<patTemplate:T>Quitar filtro</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/nofind.png" value="[x]" class="buslupa {CSSFILTRODNI} oculto" onclick="Desfiltra('#buscadniinput','#buscadniform')" />
+			</form>
+
+			<form id="buscacodcomform" method="post" action="modcentral.php" style="display:inline">
+				<input type="hidden" name="modo" value="buscar_concreto" />
+				<label for="buscaidcomm" class="lbl">Cod</label>
+				<input id="buscacodcom" class="inp" type="text" name="buscacodcom" value="<patTemplate:var name="filtrando_codcom" />" /><!--
+				--><input title="<patTemplate:T>Buscar</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/find.png" value="<patTemplate:T>Buscar</patTemplate:T>" class="buslupa"><!--
+				--><input title="<patTemplate:T>Quitar filtro</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/nofind.png" value="[x]" class="buslupa {CSSFILTROCODCOM}" onclick="Desfiltra('#buscacodcom','#buscacodcomform')" />
+			</form>
+
+			<nobr>
+			<form method="post" action="modcentral.php" style="display:inline" id="buscaid_contactoform">
+				<input type="hidden" name="modo" value="buscar_contacto"  />
+				<input class="oculto" type="hidden" name="buscacod_contacto" id="buscaid_contacto" value="<patTemplate:var name="contact_id" />">
+				<label for="buscaidcomm" class="lbl">Cliente</label>
+				<input class="inp" type="text" id="buscaid_contacto_txt" value="<patTemplate:var name="contacttext" modifier="html8" />"><!--
+				--><input title="<patTemplate:T>Buscar</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/find.png" value="<patTemplate:T>Buscar</patTemplate:T>" class="buslupa"><!--
+				--><input title="<patTemplate:T>Quitar filtro</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/nofind.png" value="[x]" class="buslupa {CSSFILTROCONTACTO}" onclick="Desfiltra('#buscaid_contacto','#buscaid_contactoform')" />
+			</form>
+			</nobr>
+		</div>
+		<div class="caj-sel">
+			<form method='post' action='modcentral.php' name='cambio_delegacion' class="separador30 enlinea" style="display:inline;">
+				<input type="hidden" name="modo" value="cambio_delegacion" />
+				<select name="tipo_id_delegacion" onchange="cambio_delegacion.submit()" class="sel">
+					<option >Gestor..</option>
+					<option value="-1" class="{CSSTODOSGESTOR}">Ver todos</option>
+					<optgroup label="Filtrar por..."  >
+					<patTemplate:var name="combolocations" />
+					</optgroup>
+				</select>
+			</form>
+
+			<form method='post' action='modcentral.php' name='cambio_label' class="oculto separador30 enlinea {CSSNOINCIDENCIAS}" style="display:inline;">
+				<input type="hidden" name="modo" value="filtrolabel" />
+				<select name="tipo_id_label" onchange="cambio_label.submit()" id="combo_tipo_id_label" class="sel">
+					<option >Tipo incidencia</option>
+					<option value="-1">Ver todas</option>
+					<optgroup label="Filtrar por..">
+					<patTemplate:var name="comboincidencias" />
+					</optgroup>
+				</select>
+			</form>
+
+			<form method='post' action='modcentral.php' name='cambio_status_com' class="separador16 enlinea" style="display:inline;">
+				<input type="hidden" name="modo" value="cambio_status" />
+				<input type="hidden" name="id_comm" value="<patTemplate:var name="id_comm" />" />
+				<select class="zui-state-default" id="" name="tipo_status" onchange="cambio_status_com.submit()" class="sel">
+					<option value='-1'>Estado..</option>
+					<option  value='-1'>Ver todos</option>
+					<optgroup label="Filtrar por..">
+					<patTemplate:var name="combosstatus" />
+					</optgroup>
+				</select>
+			</form>
+
+			<form method='post' action='modcentral.php' name='cambio_faxnofax' class="separador16 enlinea" style="display:inline;">
+				<input type="hidden" name="modo" value="cambio_faxnofax" />
+				<select class="zui-state-default" id="" name="tipo_faxnofax" onchange="cambio_faxnofax.submit()" class="sel">
+				<patTemplate:var name="optionfaxnofax" />
+					<optgroup label="Filtrar por..">
+					<option value="">Todos</option>
+					<option value="Email">Email</option>
+					<option value="Fax">Fax</option>
+					</optgroup>
+				</select>
+			</form>
+
+
+			<nobr class="{CSSNOINCIDENCIAS}">
+			<form method='post' action='modcentral.php' name='filtro_albaran' class="separador16 enlinea" style="display:inline;" id="buscanalbaran">
+				<input type="hidden" name="modo" value="busca_nalbaran" />
+				<label for="nalbaran" class="principiofiltro">Nº Albarán</label>
+				<input id="nalbaran" class="anchoNAlbaran" type="text" name="nalbaran" value="<patTemplate:var name="filtrando_nalbaran" />" /><!--
+				--><input title="<patTemplate:T>Buscar</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/find.png" value="<patTemplate:T>Buscar</patTemplate:T>" class="buslupa"><!--
+				--><input title="<patTemplate:T>Quitar filtro</patTemplate:T>" type="image" src="<patTemplate:Session var="base_estaticos" />images/nofind.png" value="[x]" class="buslupa {CSSFILTRONALBARAN}" onclick="Desfiltra('#nalbaran','#buscanalbaran')" />
+			</form>
+			</nobr>
+			<!--<nobr class="{CSSNOINCIDENCIAS}">-->
+			<form action="modcentral.php"  id="soloasignados_chk" method='post' class="separador16 enlinea" style="display:inline;">
+			   <input type="hidden" name="modo" value="filtro_asignados_asignados" />
+			   <input type="checkbox" name="solo_mostrar_asignados" <patTemplate:var name="solo_mostrar_asignados_ck" />  > Solo Asignados.
+			</form>
+			<!--</nobr>-->
+			<nobr class="{CSSNOINCIDENCIAS}">
+			<form action="modcentral.php"  id="mostrarcerradas_chk" method='post' class="separador16 enlinea" style="display:inline;">
+			   <input type="hidden" name="modo" value="filtro_asignados_cerradas" />
+			   <input type="checkbox" name="mostrar_cerradas" <patTemplate:var name="mostrar_cerradas_ck" />  > Ocultar Cerradas.
+			</form>
+
+			<patTemplate:Auth command="modincidencias/checkbox_ocultar_pendientes_logistica"  defecto="false">
+			<form action="modcentral.php"  id="mostrarpendientelogistica_chk" method='post' class="separador16 enlinea" style="display:inline;">
+			   <input type="hidden" name="modo" value="filtro_asignados_logistica" />
+			   <input type="checkbox" name="mostrar_pendiente_logistica" <patTemplate:var name="mostrar_pendiente_logistica_ck" />  > Ocultar Pendientes Logistica.
+			</form>
+			</patTemplate:Auth>
+
+			<patTemplate:Auth command="modincidencias/checkbox_ocultar_enestudio"  defecto="false">
+			<form action="modcentral.php"  id="mostrarenestudio_chk" method='post' class="separador16 enlinea" style="display:inline;">
+			   <input type="hidden" name="modo" value="filtro_enestudio" />
+			   <input type="checkbox" name="mostrar_enestudio" <patTemplate:var name="mostrar_enestudio_ck" />  > Ocultar En Estudio.
+			</form>
+			</patTemplate:Auth>
+
+			<patTemplate:Auth command="modincidencias/checkbox_ocultar_pendientes_gestor"  defecto="false">
+			<form action="modcentral.php"  id="mostrarpendientegestor_chk" method='post' class="separador16 enlinea" style="display:inline;">
+			   <input type="hidden" name="modo" value="filtro_asignados_gestor" />
+			   <input type="checkbox" name="mostrar_pendiente_gestor" <patTemplate:var name="mostrar_pendiente_gestor_ck" />  > Ocultar Pendientes Gestor.
+			</form>
+			</patTemplate:Auth>
+			</nobr>
+		</div>
+	</div>
+	<div class="clb"></div>
+		<div class="lst-sel">
+			<form method='post' action='modcentral.php' name='resultados_pagina' class="lin">
+				<input type="hidden" name="modo" value="resultados_pagina" />
+				<select name="tipo_resultadospagina" onchange="resultados_pagina.submit()" class="sel">
+					<option></option>
+					<option>1</option>
+					<option>5</option>
+					<option>10</option>
+					<option>15</option>
+					<option>20</option>
+					<option>30</option>
+					<option>50</option>
+					<option>75</option>
+					<option>100</option>
+				</select>
+			</form>
+		</div>
+
+	<div class="caj-flt">
+		<label class="lbel">Ocultar:</label>
+		<div class="caj-form">
+			<form method="post" action="modcentral.php" id="filtros_estados">
+				<input type="hidden" name="modo" value="filtro_estados" />
+				<div class="cajafiltrosestados {CAJAFILTROSESTADOS}">
+					<span class="spn-lbl"><input id="tramitados_chk" type='checkbox' name='tramitados'
+					 <patTemplate:var name="tramitados" modifier="Checkbox" /> /> Tramitadas</span>
+					<span class="spn-lbl"><input id="traspasados_chk" type='checkbox' name='traspasados'
+					<patTemplate:var name="traspasados" modifier="Checkbox" />  /> Traspasables</span>
+					<span class="spn-lbl"><input id="gestionada_chk" type='checkbox' name='gestionada'
+					<patTemplate:var name="gestionada" modifier="Checkbox" /> /> Gestionadas</span>
+					<span class="spn-lbl"><input id="eliminados_chk" type='checkbox' name='eliminados'
+					<patTemplate:var name="eliminados" modifier="Checkbox" /> /> Eliminadas</span>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div  id="cajaaplicadores" style="display:none">
+		<label><patTemplate:T>Cambiar:</patTemplate:T></label>
+
+		<patTemplate:Auth command="modcentral/aplicar_etiquetas">
+		<form action="modcentral.php" id="etiquetador"  method="post" class="oculto need_genlista enlinea">
+			<input type="hidden" name="modo" value="apply_label" />
+			<input type="hidden" name="list_id_comm" value="" id="list_id_comm" class="need_changed_str" />
+			<select name="etiqueta" id="lista_etiquetas_status"  class="sel">
+				<option value="">Etiqueta..</option>
+				<patTemplate:var name="lista_etiquetas_status" />
+			</select>
+			<input type="submit" value="Aplicar"  class="zui-state-default oculto">
+		</form>
+		</patTemplate:Auth>
+
+		<patTemplate:Auth command="modcentral/aplicar_etiquetas">
+		<form action="modcentral.php" id="etcot"  class="need_genlista relativocotizacion  enlinea oculto" method="post">
+			<input type="hidden" name="modo" value="apply_label" />
+			<input type="hidden" name="list_id_comm" value="" id="list_id_comm2c" class="listaseleccionados need_changed_str" />
+			<select name="etiqueta" id="lista_etiquetas_cotizacion"  class="sel">
+				<option value="">Estado..</option>
+				<patTemplate:var name="lista_etiquetas_cotizacion" />
+			</select>
+			<input type="submit" value="Aplicar"  class="zui-state-default oculto">
+		</form>
+		</patTemplate:Auth>
+
+		<patTemplate:Auth command="modcentral/aplicar_etiquetas">
+		<form action="modcentral.php" id="etsin"  class="oculto need_genlista enlinea enlinea {ETIQUETAINCIDENCIAS}" method="post" >
+			<input type="hidden" name="modo" value="apply_label" />
+			<input type="hidden" name="list_id_comm" value="" id="list_id_comm2s" class="listaseleccionados need_changed_str" />
+			<select name="etiqueta" id="lista_etiquetas_incidencias"  class="">
+			<option value="">Etiqueta incidencias..</option>
+			<optgroup label="Tipo:">
+			<patTemplate:var name="comboincidencias" />
+			</optgroup>
+			</select>
+			<input type="submit" value="Aplicar"  class="zui-state-default oculto">
+		</form>
+		</patTemplate:Auth>
+
+		<patTemplate:Auth command="cambiar_estado">
+		<form method='post' id="etiquetador3" action='modcentral.php'   class="need_genlista enlinea {CAMBIAESTADO}" method="post" >
+			<input type="hidden" name="modo" value="apply_status" />
+			<input type="hidden" name="list_id_comm" value="" id="list_id_comm3" class="need_changed_str" />
+			<select name="status" id="lista_status"  class="zui-state-default">
+			<option>Estado..</option>
+			<patTemplate:var name="combosstatus2" />
+			</select>
+			<input type="submit" value="Aplicar"  class="zui-state-default oculto">
+		</form>
+		</patTemplate:Auth>
+
+		<patTemplate:Auth command="cambiar_canal">
+		<form action="modcentral.php" id="etiquetador_canal" class="autoenviocambia requieregenlista need_genlista  enlinea separador16" style="display:inline;"  method="post">
+			<input type="hidden" name="modo" value="apply_task" />
+			<input type="hidden" name="list_id_task" value="" id="list_id_task" class="listaseleccionados need_changed_str"/>
+			<select name="task" id="lista_canales"  class="zui-state-default">
+			<option value="">Cambia canal..</option>
+			<option value="14">Pedidos</option>
+			<option value="17">Incidencias</option>
+			</select>
+			<input type="submit" value="Aplicar"  class="zui-state-default oculto">
+		</form>
+		</patTemplate:Auth>
+
+		<patTemplate:Auth command="cambiar_etiqueta_lugar">
+		<form action="modcentral.php" id="etiquetador4"  class="need_genlista  enlinea separador16" style="display:inline;" method="post">
+			<input type="hidden" name="modo" value="apply_location" />
+			<input type="hidden" name="list_id_comm" value="" id="list_id_comm4" class="need_changed_str" />
+			<select name="id_location" id="lista_etiquetas_locations"  class="listadodelegacion">
+			<option value="">Reasignar gestor administrativo...</option>
+			<patTemplate:var name="combolocations" />
+			</select>
+			<input type="submit" value="Aplicar"  class="oculto">
+		</form>
+		</patTemplate:Auth>
+		<span class="separador16"> | </span>
+		<form class="separador16 requieregenlista need_genlista  enlinea oculto" method="post" id="etiquetadorsetcon">
+			<input type="hidden" name="list_id_setcod" value="" id="list_id_setcod" class="listaseleccionados"/>
+			<input type="text" name="newcode" />
+			<input type="hidden" name="modo" value="apply_codcom" />
+			<input type="submit" value="Aplicar COD" />
+		</form>
+	</div>
+	
+	<div class="oculto">
+		<input class="accionmensaje"  title="<patTemplate:T>Llamada entrante</patTemplate:T>" type="image" value="Llamada entrante" onclick="return CajaOpinar()" src="<patTemplate:Session var="base_estaticos" />img/llamadaentrante.gif" />
+		<input class="accionmensaje" title="<patTemplate:T>Llamada realizada</patTemplate:T>"  type="image" value="Llamada realizada" onclick="return CajaLlamar()"  src="<patTemplate:Session var="base_estaticos" />img/llamadasaliente.gif" >
+		<input class="accionmensaje" title="<patTemplate:T>Enviar correo</patTemplate:T>"  type="image" value="Enviar correo" onclick="return EscribirEmails()"  src="<patTemplate:Session var="base_estaticos" />img/email1.gif" >
+		<input class="accionmensaje" title="<patTemplate:T>Enviar fax</patTemplate:T>"  type="image" value="Enviar fax" onclick="return EscribirFax()"  src="<patTemplate:Session var="base_estaticos" />img/faxsaliente1.gif" >
+	</div>
+	<div class="clb"></div>
+</div>
+
+
+<!--
+
+<xmp>
+<patTemplate:var name="consulta" />
+</xmp>
+
+-->
+
+
+<table id="lineas_de_comm"  class="tbl-list" border="0" cellpadding="0" cellspacing="0"  width="100%">
+<thead class="headListado">
+<tr>
+    <th style="width:16px"></th>
+    <th></th>
+<th class="cabecera" align="left">
+	<patTemplate:var name="codigotxt" modifier="html8"/>
+        <form action="modcentral.php"  id="orden_codcom" method='post' class="lin">
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="codcom_orden" />"/>
+   <input type="hidden" name="updown" value="codcom"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="codcom_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>"  zstyle="background-image: none!important"  />
+</form>
+</th>
+<th class="cabecera">Cod.cliente/Nombre cliente
+<form action="modcentral.php"  id="orden_contact_code" method='post' class="lin" >
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="contact_code_orden" />"/>
+   <input type="hidden" name="updown" value="contact_code"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="contact_code_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>" />
+</form>
+</th>
+<th class="cabecera">Fecha
+<form action="modcentral.php"  id="orden_fecha" method='post' class="lin">
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="date_cap_orden" />"/>
+   <input type="hidden" name="updown" value="date_cap"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="date_cap_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>" />
+</form></th>
+<th class="cabecera">Asunto
+<form action="modcentral.php"  id="orden_asunto" method='post' class="lin">
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="title_orden" />"/>
+   <input type="hidden" name="updown" value="title"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="title_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>" />
+</form></th>
+<th class="cabecera">Estado
+<form action="modcentral.php"  id="orden_estado" method='post' class="lin" >
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="status_orden" />"/>
+   <input type="hidden" name="updown" value="status"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="status_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>" />
+</form></th>
+<th class="cabecera">Gestor
+<form action="modcentral.php"  id="orden_gestor" method='post' class="lin">
+   <input type="hidden" name="modo" value="updown_change"/>
+   <input type="hidden" name="orden" value="<patTemplate:var name="name_orden" />"/>
+   <input type="hidden" name="updown" value="name"/>
+   <input type="image" src="<patTemplate:Session var="base_estaticos" />images/<patTemplate:var name="name_icon" />" title="<patTemplate:Translate>Ordenar</patTemplate:Translate>" />
+</form></th>
+  <th class="cabecera"></th>
+</tr>
+</thead>
+
+<tbody>
+<patTemplate:tmpl name="list_entry">
+
+        <tr class="filaListado filaDatos {FILACSS2} {OCULTARLINEAVACIA} {PI} {CLASELEIDO}" id="datos_<patTemplate:var name="id_comm" />"    >
+            <td><input id="checkbox_{ID_COMM}" class='selcomm {CSSCHECK}' id_comm="{ID_COMM}" type="checkbox" /> </td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')" class="comlist0"><div class="icns"><patTemplate:var name="idiomas"/><patTemplate:Auth command="modcentral/iconos"  defecto="true">{ICONS}</patTemplate:Auth></div>  </td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')"> <patTemplate:var name="codcom" modifier="html8"/>  </td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')"><a  title="<patTemplate:var name="contact_code" modifier="html8"/>/<patTemplate:var name="contact_name" modifier="html8"/>"  onclick="Pagina.click_Cliente('<patTemplate:var name="id_contact"/>','<patTemplate:var name="id_comm"/>')" class="contooltip local-load" rel="#localload_<patTemplate:var name="id_comm"/>"><patTemplate:var name="contact_code" modifier="html8"/>/<patTemplate:var name="contact_name" modifier="html8"/></a></td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')"><patTemplate:var name="date_cap" modifier="Fechahora2"/></td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')" ><patTemplate:var name="title" modifier="html8"/></td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')" ><patTemplate:var name="status" modifier="html8"/></td>
+			<td onclick="ConmutarSolapa('<patTemplate:var name="id_comm"/>')"><patTemplate:var name="nombredelegacion" modifier="html8" /></td>
+			<td><img src="<patTemplate:Session var="base_estaticos" />images/find.png" onclick='Pagina.navegaDocumento(<patTemplate:var name="id_comm" />)'> </td>
+	</tr>
+
+	<tr class="filaAmpliadoDatos" id="precont_<patTemplate:var name="id_comm" />">
+		<td id="contenedor_<patTemplate:var name="id_comm" />" colspan='9'></td></tr>
+	<tr><td class="untooltip"><div id="localload_<patTemplate:var name="id_comm"/>"><!--
+                                                                                 
+     --><table class="cajatooltip" >
+                        <tr><td colspan="2"><div style="width: 100px;background-color: white;text-align: center;
+			background-image: url(<patTemplate:Session var="base_estaticos" />img/marca<patTemplate:var name="colorriesgo" modifier="html8"/>100px.gif);
+			background-repeat: no-repeat;
+			background-position: -<patTemplate:var name="ancho_pos" modifier="html8"/>px 0px;
+		"> <patTemplate:var name="text_porcentual" modifier="html8"/> &nbsp;</div></td></tr>
+
+        <tr><td class="colztool">Saldo Contable</td><td class="colwtool"><patTemplate:var name="saldo_total" modifier="html8"/></td></tr>
+        <tr><td class="colztool">Riesgo Vivo</td><td class="colwtool"><patTemplate:var name="riesgo_vivo" modifier="html8"/> </td></tr>
+        <tr><td class="colztool">Riesgo máximo</td><td class="colwtool"><patTemplate:var name="riesgo_maximo_mostrar" modifier="html8"/></td></tr>
+        <tr><td class="colztool">Cobertura Aseguradora</td><td class="colwtool"><patTemplate:var name="cobertura" modifier="html8"/></td></tr>
+        <tr><td class="colztool">Máximo a Servir</td><td class="colwtool"><patTemplate:var name="maximo_servir" modifier="html8"/></td></tr>
+        <tr><td></td></tr>
+        <tr><td class="colztool">Exigible</td><td class="colwtool"><patTemplate:var name="exigible_mostrar" modifier="html8"/></td></tr>
+        <tr><td class="colztool">Antigüedad deuda</td><td class="colwtool"><patTemplate:var name="antiguedad" modifier="html8"/></td></tr>
+        <tr><td></td></tr>
+        <tr><td class="colztool">Impagados</td><td class="colwtool"><patTemplate:var name="impagados" /> </td></tr>
+        <tr><td class="colztool">RAI 2 años</td><td class="colwtool"><patTemplate:var name="RAI" /> </td></tr>
+	</table>
+	
+	</div></td></tr>
+
+
+	</patTemplate:tmpl>
+
+
+	<tr  class="filaListado filaDatos {OCULTARMENSAJELINEAVACIA}">
+	<td colspan="9">
+	<p class='mensajeListaVacia'>No hay comunicaciones</p>
+	</td>
+	</tr>
+</tbody>
+</table>
+
+<div id="cajafiltros2">
+	<div id="inforesultadoslistado"></div>
+	<div id="cajaMaslineas" class="lst-sel">
+		<a class="enlacegenerico" name="maslineas" href="#maslineas" onclick="return MasLineas()">M&aacute;s l&iacute;neas</a>
+		<form method='post' action='modcentral.php' name='resultados_pagina2' class="lin">
+		<!--<patTranslate:Translate>Filas:</patTranslate:Translate>-->
+			<input type="hidden" name="modo" value="resultados_pagina" />
+			<select class="zui-state-default" id="" name="tipo_resultadospagina" onchange="resultados_pagina2.submit()">
+				<option></option>
+				<option>5</option>
+				<option>10</option>
+				<option>15</option>
+				<option>20</option>
+				<option>30</option>
+				<option>50</option>
+				<option>75</option>
+				<option>100</option>
+			</select>
+		</form>
+	</div>
+	<div class="clb"></div>
+</div>
+
+
+<patTemplate:tmpl name="navegador" src="vacio.htm" autoload="off" parse="on"/>
+
+</div ><!--  caja filtro y listado  -->
+
+
+</div>
+
+</div>
+
+<div class="oculto removeme">
+<patTemplate:Translate>Ver comunicaciones</patTemplate:Translate>
+</div>
+
+
+
+<div class="oculto">
+<div id="altaComentario">
+<patTemplate:tmpl name="altacomentario" src="altacomentario.htm" autoload="on" parse="on"/>
+</div>
+</div>
+
+
+<iframe id="_oculto" name='_oculto' class="oculto">
+</iframe>
+
+
+
+		<div class="push"></div>
+		<div class="clb"></div>
+	</div>
+	</div>
+	<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+
+</body>
+
+
+</html>
+</patTemplate:tmpl>
+

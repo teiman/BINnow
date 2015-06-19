@@ -1,0 +1,357 @@
+<patTemplate:tmpl name="page">
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="css/dinamico.php?modo=modreporting&amp;extra=" rel="stylesheet"  type="text/css" />
+<!--    <link href="css/reporting_jq.css" rel="stylesheet"  type="text/css" />
+    -->
+    <link href="css/reporting_style.css" rel="stylesheet"  type="text/css" />
+
+    <script src="js/dinamicojs.php?modo=modreporting&amp;extra="></script>
+    <script src="js/jquery.tablesorter.js"></script>
+    
+    <script src="js/ui/ui.core.js"></script>
+    <script src="js/ui/ui.draggable.js"></script>
+    <script src="js/ui/ui.droppable.js"></script>
+
+    <script src="js/jquery.corners.js"></script>
+
+    <script src="js/D_RESUMEN_DATOS_definiciones.js"></script>
+
+<script>
+
+    function muestraListado(){
+
+        $("#mensajecargando").html("Cargando...");
+
+        setTimeout(function(){
+            $("#icolumnas").val( enUso.join(","));
+            $("#iagrupamientos").val( agruparLista.join(","));
+            sugiereReenviar(true,po_cargando);
+
+            $.ajax({
+                type: 'POST',
+                url: 'modreporting.php',
+                data:$('#reporting').serializeArray(),
+                async:true,
+                success: function(data){
+                    $("#contenedorcajaresultados").html(" ");
+                    $(tablaOriginal).appendTo($("#contenedorcajaresultados"));
+                    $("#cajaderesultados").html(" ");
+                    $("#cajaderesultados").html(data);
+
+                    setTimeout(function(){
+                        $("#tablaresultados").tablesorter({sortList:[[0,0],[2,1]], widgets: ['zebra']});
+                        hacerDropable();
+                        sugiereReenviar(false);
+                    },10);
+                }
+            });
+        },10);
+    }
+
+
+    var tablaOriginal;
+    var po_recargar = "El informe ha cambiado, recargar";
+    var po_cargando = "Cargando...";
+
+    Array.prototype.filterOutValue = function(v) {
+        var x, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = this.length; _i < _len; _i++) {
+            x = this[_i];
+            if (x !== v) {
+                _results.push(x);
+            }
+        }
+        return _results;
+    };
+
+    function eliminarAgrupamiento(idagrupamiento){
+        //console.log("eA:"+idagrupamiento);
+        //console.dir(agruparLista);
+        agruparLista = agruparLista.filterOutValue(idagrupamiento);
+        //console.dir(agruparLista);
+    }
+
+    function eliminarSubtotal(idagrupamiento){
+        //console.log("eA:"+idagrupamiento);
+        //console.dir(agruparLista);
+        subtotalLista = subtotalLista.filterOutValue(idagrupamiento);
+        //console.dir(agruparLista);
+    }
+
+    function hacerDropable(){
+		$( ".droppable" ).droppable({
+			drop: function( event, ui ) {
+                                var newid = $(ui.draggable).data("code");
+                                //console.log(newid);
+                                if(jQuery.inArray(newid, enUso)<0){
+                                    //console.log("actualizando enUso");
+                                    enUso.push(newid);
+                                    necesitaReenviar(true);
+                                }
+			}
+		});
+
+		$( "#filtrosagrupados" ).droppable({
+			drop: function( event, ui ) {
+                                var newid = $(ui.draggable).data("code");
+                                var rel = $(ui.draggable).attr("rel");
+
+                                alert(rel);
+                                
+                                if(!newid) return;
+
+                                if(jQuery.inArray(newid, agruparLista)<0){
+                                    //console.log("actualizando enUso");
+                                    agruparLista.push(newid);
+
+
+                                    var cerrar = $("<a href='#' class='closex'>").click(function(){
+                                        eliminarAgrupamiento(newid);
+                                        //$(this).parent().remove();
+                                        $("#subtotal_"+newid).remove();
+                                        sugiereReenviar(true,po_recargar);
+                                    }).html("x");
+
+                                    $("#filtrosagrupados").append($("<span>").attr("id","subtotal_"+newid).html(" "+trans[newid]).addClass("itemfiltro").append(cerrar) );
+                                    sugiereReenviar(true,po_recargar);
+                                    $(".itemfiltro",$("#solucionesfiltros")).corners();
+                                }
+			}
+		});
+
+		$( "#filtrosubtotales" ).droppable({
+			drop: function( event, ui ) {
+                                var newid = $(ui.draggable).data("code");
+                                //console.log(newid);
+                                if(!newid) return;
+                                
+
+                                if(jQuery.inArray(newid, subtotalLista)<0){
+                                    //console.log("actualizando enUso");
+                                    subtotalLista.push(newid);
+
+                                    var cerrar = $("<a href='#'>").click(function(){
+                                        eliminarSubtotal(newid);
+                                        //$(this).parent().remove();
+                                        $("#agrupar_"+newid).remove();
+                                        sugiereReenviar(true,po_recargar);
+                                    }).html("x");
+
+                                    $("#filtrosubtotales").append($("<span>").attr("id","agrupar_"+newid).html(" "+trans[newid]).addClass("itemfiltro").append(cerrar) );
+                                    sugiereReenviar(true,po_recargar);
+                                    $(".itemfiltro",$("#solucionesfiltros")).corners();
+                                }
+			}
+		});
+
+
+                $(".cabeza_columna").draggable({
+                                helper: "clone",
+                                cursor: "move",
+                                hoverClass: "sueltaaqui"
+                });
+
+                $(".itemfiltro").corners();
+                
+
+    }
+
+    function sugiereReenviar(mostrar,mensaje){
+        //
+        $("#botonRecargarVoluntario").attr("value",mensaje);
+        $("#botonRecargarVoluntario").removeClass("oculto");
+        if(mostrar){
+            $("#botonRecargarVoluntario").show();
+        } else {
+            $("#botonRecargarVoluntario").hide();
+        }
+    }
+
+    $(function() {
+        tablaOriginal = $('#tablaresultados').clone();
+
+        for(var t=0;t<columnas.length;t++){
+            var item = columnas[t];
+
+            var libre = jQuery.inArray(item.id, enUso)<0;
+
+            var $linea = $("<li>").html("<a rel='"+item.id+"'>"+ item.nombre + "</a>").addClass("draggable","ui-widget-content").attr("rel",item.id).data("code",item.id).addClass("linear");
+
+            if(!libre)
+                $linea.addClass("ocupado");
+
+
+            $("#paleta").append($linea);
+            
+        }
+
+	$( ".draggable" ).draggable({
+                        helper: "clone",
+			cursor: "move",
+                        hoverClass: "sueltaaqui"
+        });
+
+        hacerDropable();
+
+        var hayAutoEnviar = {AUTOENVIO}0;
+
+        if (hayAutoEnviar){
+            muestraListado();
+        }
+
+
+        $("#buscacampo").keyup(function(){
+
+            var comparaCon = $(this).val()+"";
+            if(comparaCon.length<1){
+                $("#paleta li").show();
+                return;
+            }
+
+            $("#paleta li").each(function(){
+                var contenido = $(this).html().toUpperCase();
+                if(contenido.indexOf(comparaCon.toUpperCase())<0){
+                    $(this).hide();
+                }
+            });
+        });
+
+
+
+    });
+
+    function necesitaReenviar(){
+
+        //console.log("necesitaReenviar");
+        $("#modoform").val("autoenvio");
+
+        $("#icolumnas").val( enUso.join(","));
+        $("#agrupamientos").val(agruparLista.join(","))
+
+
+        $("#reporting").submit();
+
+    }
+
+    var enUso= [<patTemplate:tmpl name="list_columnas_js">"{NOMBRE}",</patTemplate:tmpl>""];
+    var agruparLista= [<patTemplate:tmpl name="list_agrupar_js">"{NOMBRE}",</patTemplate:tmpl>""];
+    var subtotalLista= [<patTemplate:tmpl name="list_subtotal_js">"{NOMBRE}",</patTemplate:tmpl>""];
+
+
+    </script>
+
+
+</head>
+<body>
+	<div class="wrapper">
+		<div id="root">
+			<patTemplate:tmpl name="cabeza" src="cabeza.htm" autoload="on" parse="on"/>
+			<div class="clb"></div>
+			<div id="contenedor">
+    <table style="width:100%" id="solucionesfiltros">
+        <tr><td width="240">
+        <h1><img src="img/mis_informes.png" hspace="5" align="absmiddle" style="width:20px;height:20px" />Mis informes </h1>
+	<ul>
+            <li><a href="#">An&aacute;lisis de ventas</a></li>
+	    <li><a href="#">Comparativa vendedores</a></li>
+	    <li><a href="#">Devoluciones vencidas</a></li>
+	    <li><a href="#">Informe Anual</a> </li>
+	</ul>
+        <input type="button" name="Nuevo" value="Nuevo Informe" style="margin-left: 17px"/>
+
+            </td><td  valign="top">
+
+                <table width="100%">
+                    <tr><td valign="top" width="200" ><h3>Agrupado por:</h3></td><td valign="top"><div id="filtrosagrupados" class="receptor ragrupados">&nbsp;</div></td></tr>
+                    <tr><td valign="top"><h3>Subtotales:</h3></td><td valign="top" ><div id="filtrosubtotales" class="receptor">&nbsp;</div></td></tr>
+                    <tr><td valign="top"><h3>Filtrar por:</h3></td><td valign="top"><div class="receptor">&nbsp;</div></td></tr>
+                    <tr><td valign="top"  colspan="3">
+                                <input id="botonRecargarVoluntario" style="width:300px" type="button" value="El informe ha cambiado, recargar" onclick="muestraListado()" class="oculto" />
+                                <span style="float:right">
+                                <input type="button" value="Guardar">
+                                <input type="button" value="Imprimir">
+                                <input type="button" value="Email">
+                                <input type="button" value="Excel">
+                                </span>
+                        </td></tr>
+                </table>
+                
+                
+            </td>
+        </tr>
+    </table>
+       
+<div style="text-align: left"><div class="oculto">
+
+      <form method="post" action="modreporting.php" id="reporting">
+
+            <input type="hidden" name="modo" value="cogedatos" id="modoform">
+          <input type="hidden" style="width:100%" name="columnas" value="" id="icolumnas" value="<patTemplate:tmpl name="list_columnas_data">"{NOMBRE}",</patTemplate:tmpl>">
+          <input type="hidden" style="width:100%" name="agrupamientos" value="" id="iagrupamientos" value="<patTemplate:tmpl name="list_agrupamientos_data">"{NOMBRE}",</patTemplate:tmpl>">
+         
+      </form>
+    </div><table width="100%" border="0" style="width:100%">
+        <tr><td valign="top" width="200px" style="min-width:200px;width:200px!important;overflow:hidden">
+
+                <input type="text" id="buscacampo" />
+                <ul id="paleta" style="margin:4px">
+                    
+                    
+                </ul>
+
+            </td><td valign="top" style="overflow:scroll">
+
+    <div id="contenedorcajaresultados">
+      <table id="tablaresultados" class="tablesorter droppable" style="margin:0px" border="0" cellpadding="0" cellspacing="1">
+          <thead>
+              <tr>
+                  <patTemplate:tmpl name="list_columnas">
+                  <th class="nobr cajacabeza_columna"><a class="cabeza_columna" id="cabeza_{ID}" rel="{ID}">{NOMBRE}</a> &nbsp; &nbsp; </th>
+                  </patTemplate:tmpl>
+              </tr>
+          </thead>
+
+          <tbody id="cajaderesultados">              
+              <tr><td align="center" colspan="{NUMCOLUMNAS}" id="mensajecargando"></td> </tr>
+          </tbody>
+
+
+      </table>
+    </div>
+
+            </td></tr>
+    </table>
+
+
+
+    <input type="button" value="Recargar listado" onclick="muestraListado()" />
+
+          <pre>
+        <patTemplate:var name="sql" modifier="html8"/>
+      </pre>
+
+    
+<div style="margin:6px" />&nbsp;</div>
+
+
+<patTemplate:tmpl name="navegador" src="vacio.htm" autoload="off" parse="on"/>
+
+    </div></div></div></div>
+
+		<div class="push"></div>
+		<div class="clb"></div>
+	</div>
+	</div>
+	<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+
+</body>
+
+
+</html>
+</patTemplate:tmpl>

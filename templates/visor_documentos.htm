@@ -1,0 +1,107 @@
+<div style="background-color: #eee">
+
+    <div id="enlacevolver"><a href="modcentral.php?modo=autoabrir&id_abrir=<patTemplate:var name="id_comm"/>"><img src="<patTemplate:Session var="base_estaticos" />img/show-menu.png" align="absmiddle"> Volver listado de comunicaciones</a></div>
+
+
+<table width="100%"  class="" >
+
+    <tr><td class="colz1">Código:</td><td class="dedato"><patTemplate:var name="codcom" modifier="html8"/></td></tr>
+	<tr><td class="colz1"><b><patTemplate:T>Asunto:</patTemplate:T></b></td><td class="dedato"><b><patTemplate:var name="title" modifier="html8"/></b></td></tr>
+	<tr><td class="colz1"><patTemplate:T>Buzón:</patTemplate:T></td><td class="dedato"><patTemplate:var name="from_to" modifier="html8"/></td></tr>
+    <tr><td class="colz1">Cliente:</td><td class="dedato"><patTemplate:var name="contact_code" modifier="html8"/>/<patTemplate:var name="contact_name" modifier="html8"/></td></tr>
+	<tr><td class="colz1">Estado:</td><td class="dedato"><patTemplate:var name="status" modifier="html8"/></td></tr>
+	<tr><td class="colz1"><patTemplate:T>Fecha:</patTemplate:T></td><td class="dedato"><patTemplate:var name="date_cap" modifier="Fechahora"/></td></tr>
+
+<tr>
+    <td colspan='2' style='background-color: white;border-top:1px solid #ccc' valign='top'>
+        <div><div><div><div><div>
+	<patTemplate:var name="preview_html" />
+        </div></div></div></div></div>
+	</td>
+</tr>
+</table>
+
+
+    <patTemplate:var name="riesgo_html" />
+
+</div>
+
+
+<style>
+
+
+.colz1 {
+	text-align: right;
+	margin-right: 8px;
+	padding-right: 8px;
+	min-width:64px;
+	width: 128px;
+	white-space:nowrap;
+	text-align:right;
+  	color: #d05627;
+	color:black;
+
+        background-color: #e6f0f2;
+
+        font-family: sans, verdana, sans-serif;
+        font-size: 11px;
+}
+
+
+
+.dedato {
+  font-family: sans,verdana,sans-serif;
+  font-size: 11px;
+   background-color: #f3f8f9;
+}
+
+.desolapa td 
+{
+
+background-color: #ffffee;
+
+}
+
+#enlacevolver { text-align:left;line-height: 22px;
+    padding-top:4px;
+    padding-bottom:4px;
+    padding-left:8px;
+}
+
+
+#enlacevolver a {
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#enlacevolver a:hover {
+    text-decoration:underline;
+}
+
+.amplioview {
+  width: 99%;
+  border: 0px;
+  overflow: auto;
+  min-height: 600px;
+}
+
+#cajasolapa {
+
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+
+
+</style>
+
+<!--[if IE]>
+<style>
+
+.amplioview {
+    height: 600px;
+}
+
+</style>
+<![endif]-->
+

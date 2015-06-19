@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+
+        <script type="text/javascript">
+            function validarForm(formulario) {
+                if (formulario.nombre.value.length == 0) {
+                    formulario.nombre.focus();
+                    document.getElementById('cliente').innerHTML = 'Debe introducir el campo Cliente';
+                    var nom = "si";
+                } else {
+                    document.getElementById('cliente').innerHTML = '';
+                }
+                if (formulario.email.value.length == 0) {
+                    formulario.email.focus();
+                    document.getElementById('email').innerHTML = 'Debe introducir el campo Email';
+                    var ema = "si";
+                } else {
+                    document.getElementById('email').innerHTML = '';
+                }
+                if (formulario.responsable.value.length == 0) {
+                    formulario.responsable.focus();
+                    document.getElementById('responsable').innerHTML = 'Debe introducir el campo Responsable';
+                    var res = "si";
+                } else {
+                    document.getElementById('responsable').innerHTML = '';
+                }
+                ;
+                if (nom == "si" || ema == "si" || res == "si") {
+                    return false;
+                }
+                ;
+                return true;
+            }
+
+        </script>
+        <script>
+            function comprobarClave() {
+                var clave1 = document.f1.nuev_pass.value
+                var clave2 = document.f1.rep_pass.value
+
+                if (clave1 == clave2) {
+                    return true;
+                } else {
+                    document.getElementById('clave').innerHTML = 'Las contraseñas deben ser iguales';
+                    error_claves_iguales = "si";
+                    //abrirPass("int_pass");
+                    return false;
+                }
+
+            }
+
+        </script>
+        <script type="text/javascript" src="js/jquery.leanModal.min.js"></script>
+        <script>
+            
+            function comprobarPass(dato) {
+                $("#id_nuev_pass").attr("value", dato);
+                abrirPass("int_pass");
+            }
+            function abrirPass(nom_form) {
+                var tag = $("<a href='#" + nom_form + "'></a>");
+                tag.leanModal();
+                tag.click();
+            }
+            
+            function cancelar() {
+                $('#lean_overlay').click();
+            }
+        </script>
+        <script>
+            id_cliente_borra = false;
+
+            function preparar_popup_cerrar(dato) {
+                id_cliente_borra = dato;
+                $("#boton_enviar_submit").attr("data-id", dato);
+                abrirPopup("desea_borrar");
+            }
+            function abrirPopup(cual) {
+                var tag = $("<a href='#" + cual + "'></a>");
+                tag.leanModal();
+                tag.click();
+            }
+
+            function borrar_definitivo() {
+
+                $("#form_borrar_" + id_cliente_borra).submit();
+            }
+            function no_borrar() {
+                $('#lean_overlay').click();
+            }
+        </script>
+
+
+
+
+        <title>Admin cliente</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Language" content="es" />
+        <link rel="stylesheet" href="css/reset.css" type="text/css" media="screen" title="Video JS" />
+        <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen" title="Video JS" />
+
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,700' rel='stylesheet' type='text/css' />
+
+
+
+    </head>
+
+    <body>
+        <div class="caj-cont">
+            <div class="caj-top-menu"><!-- Caja logo + menu -->
+                <ul>
+                    <li><a href="http://www.recombine.com/signin">Sign In</a></li>
+                    <li><a href="http://www.recombine.com/our-test">Our Test</a></li>
+                    <li><a href="http://www.recombine.com/services">Services</a></li>
+                    <li><a href="http://news.recombine.com/">Welcome</a></li>
+                </ul>
+                <div class="caj-logo"><a href="http://www.recombine.com/">Recombine</a></div>
+                <div class="clb"></div>
+            </div>
+
+            <div class="caj-ttl"><h1>Bienvenido a Recombine.</h1></div><!-- Caja título -->
+            <div class="caj-lin">
+                <ul>
+                    <li class="green_line"></li>
+                    <li class="red_line"></li>
+                    <li class="blue_line"></li>
+                    <li class="yellow_line"></li>
+                </ul>
+                <div class="clb"></div>
+            </div>
+            <patTemplate:tmpl name="pagina">
+                <div class="caj-clt-new"><!-- nuevo -->
+                    <h2 class="h2-new">{CLIENTE}</h2>
+                    <div class="new-clt-bg">
+                        <form method="post" action="mod-admin-cliente.php" name="clienteNuevo" onsubmit="return validarForm(this);">
+                            <div class="caj-new-col">
+                                <p><span class="lbl">Cliente</span><input type="text" {CLIENTNAME} name="nombre" class="inp"/></p>
+                                <div id="cliente"></div>
+                                <p><span class="lbl">Email</span><input type="text" {USEREMAIL} name="email" class="inp"/></p>
+                                <div class="clb"></div>
+                                <div id="email"></div>
+                                <p><span class="lbl {CONTRASENA}">Contraseña</span><input type="text" name="contrasena" class="inp {CONTRASENA}"/></p>
+                                <div id="contrasena"></div>
+                                <button onClick="comprobarPass({ID_USER}); return false" class="cld-dlt {CANCELAR}">Cambiar Contraseña</button>
+                            </div>
+                            <div class="caj-new-col">
+                                <p><span class="lbl">Teléfono</span><input type="text" {USERPHONE} name="telefono" class="inp"/></p>
+                                <p><span class="lbl">Responsable</span><input type="text" {USERNAME} name="responsable" class="inp"/></p>
+                                <div id="responsable"></div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="clb"></div>
+                            <div class="caj-new-acs">
+
+                            </div>
+                            <div class="caj-new-acs">
+                                <input type="hidden" name="modo" value="{VALOR}" />
+                                <input type="hidden" name="id_user" {ID}>
+                                    <input class="end" value="Guardar" type="submit"/>
+                                    <div class="clb"></div>
+                                    </form>
+                                    <form action="mod-admin-cliente.php" method="post">
+                                        <input class="end {CANCELAR}" value="Cancelar" type="submit"/>
+                                        <div class="clb"></div>
+                                    </form>
+                            </div>
+                            <div class="clb"></div>
+                    </div>
+            </patTemplate:tmpl>
+        </div>
+        <patTemplate:tmpl name="busqueda">
+            <div class="clb"></div>
+            <form method="post" action="mod-admin-cliente.php">
+                <div class="caj-bsq-clt"><!-- Caja búsqueda -->
+                    <span class="">Buscar</span>
+                    <input name="buscar" class="inp" type="text" {VALOR}/>
+                    <input type="image" class="buslupa" value="Buscar" src="http://localhost/recombine/images/find.png" title="Buscar" />
+                </div>
+        </patTemplate:tmpl>
+        </form>
+        <patTemplate:tmpl name="filtro">
+            <form method="post" action="mod-admin-cliente.php" {FILTRO}>
+                <div class="caj-bsq-clt"><!-- Caja eliminar filtros -->
+                    <input type="hidden" name="buscar" value="mostrar todos" />
+                    <input value="Mostrar todos" class="inp" type="submit"/>
+                </div>
+            </form>
+        </patTemplate:tmpl>
+
+        <div class="caj-lst-clt"><!-- Caja listado clientes -->
+            <h2 class="h2-clt">Clientes actuales</h2>
+            <table class="tbl-clt">
+                <!--<colgroup>
+                    <col width="18%" />
+                    <col width="20%" />
+                    <col width="10%" />
+                    <col width="15%" />
+                    <col width="12%" />
+                    <col width="18%" />
+                    <col width="7%" />
+                </colgroup>-->
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>email</th>
+                        <th>Teléfono</th>
+                        <th>Responsable</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <patTemplate:tmpl name="list_entry">
+                    <tbody>
+                        <tr class="{CLASE}">
+                            <td><center><patTemplate:var name="client_name" modifier="html8" /></center></td>
+
+                            <td><center><patTemplate:var name="user_email" modifier="html8" /></center></td>
+
+                            <td><center><patTemplate:var name="user_phone"  modifier="html8" /></center></td>
+                            <td><center><patTemplate:var name="user_name" modifier="html8" /></center></td>
+
+                            <td><form action="mod-admin-cliente.php" method="post">
+                                    <input type="hidden" name="modo" value="mostrarEdicion" />
+                                    <input type="hidden" name="id_user" value='<patTemplate:var name="id_user" modifier="html8" />' />
+                                    <button type="submit" class="clt-edt {SIN}"><img src="images/edit.png"></button>
+                                </form>
+                                <form action="mod-admin-cliente.php" id="form_borrar_{ID_USER}" method="post">
+                                    <input type="hidden" name="id_user" value='<patTemplate:var name="id_user" modifier="html8" />' />
+                                    <input type="hidden" name="modo" value="eliminar" />
+                                </form>    
+                                <button onClick="preparar_popup_cerrar({ID_USER});
+                        return false" class="cld-dlt {SIN}"><img src="images/delete.png"></button>
+                            </td>
+                        </tr>
+
+                </patTemplate:tmpl>
+                <patTemplate:tmpl name="paginacion">
+                    <tr class="footer">
+                        <td colspan="7"><a href="mod-admin-cliente.php?modo=paganterior" class="{CLASEINI}"></a>
+                            <span>{INI} a {FIN} de {TOTAL}</span>
+                            <a href="mod-admin-cliente.php?modo=pagsiguiente" class="{CLASEFIN}"></a></td>
+                    </tr>
+                </patTemplate:tmpl>
+                </tbody>
+            </table>		
+        </div>
+
+        <div class="clb"></div>
+
+
+        <div class="caj-footer"><!-- Footer -->
+            <div class="caj-separa">
+                <span class=""></span>
+                <a href="#" class="log"></a>
+                <span class=""></span>
+                <div class="clb"></div>
+            </div>
+            <div class="caj-nlc">
+                <ul class="ul-rgt">
+                    <li class="header">Support</li>
+                    <li><a href="/contact">contact</a></li>
+                    <li><a href="/faq">faq</a></li>
+                </ul>
+                <ul class="ul-rgt">
+                    <li class="header">Terms &amp; Conditions</li>
+                    <li><a href="/privacy">privacy policy</a></li>
+                    <li></li>
+                </ul>
+                <ul class="ul-lft">
+                    <li class="header">Company</li>
+                    <li><a href="/about-us">about us</a></li>
+                    <li><a href="/careers">careers</a></li>
+                </ul>
+                <ul class="ul-lft">
+                    <li class="header">Science</li>
+                    <li><a href="http://news.recombine.com">news</a></li>
+                    <li><a href="/publications">publications</a></li>
+                    <li></li>
+                </ul>
+                <div class="clb"></div>
+            </div>
+        </div>
+
+        </div>
+
+        <div id="desea_borrar" class="pop_borrar">
+            <center>Desea borrar el cliente<br>
+                    <button data-id="" onclick="borrar_definitivo(this)">SI</button>
+                    <button onclick="no_borrar(this)">NO</button></center>
+        </div>
+
+        <div class="pop_pass" id="int_pass" >
+            <form action="mod-admin-cliente.php" method="post" name="f1" onsubmit="return comprobarClave()" >
+                Introduzca nueva contraseña:<br>
+                    <input type="password" name="nuev_pass" /><p>
+                        Repita la contraseña:<br>
+                            <input type="password" name="rep_pass" />
+                            <div id="clave"></div>
+                            <input type="hidden" id="id_nuev_pass" name="id_user" value="" />
+                            <input type="hidden" name="modo" value="cambiaPass" />
+                            <input type="submit" value="Guardar" /><br>
+                                </form>
+                                <button onclick="cancelar(this)">Cancelar</button></center>
+                                </div>
+                                </body>
+                                </html>

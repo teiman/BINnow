@@ -1,0 +1,42 @@
+<div id="root-menu-div" style="display:none">
+	<ul>
+		<li class="li-menu-head"><patTemplate:Translate>Explotación</patTemplate:Translate></li>
+		<patTemplate:Auth command="modreporting/"  defecto="false">
+        <li class="li-menu"><a href="modreporting.php"><span class="ikmenu  ik_group"></span>Explotación de datos</a></li>
+		</patTemplate:Auth>
+
+        <patTemplate:Auth command="ventanas_administracion"  defecto="false">
+        <li class="li-menu-head"><patTemplate:Translate>Administración</patTemplate:Translate></li>
+        </patTemplate:Auth>
+
+        <patTemplate:Auth command="modusuarios/"  defecto="false">
+        <li class="li-menu"><a href="modusuarios.php"><span class="ikmenu ik_usuarios"></span><patTemplate:Translate>Usuarios</patTemplate:Translate></a></li>
+        </patTemplate:Auth>
+
+        <patTemplate:Auth command="ventanas_administracion"  defecto="false">
+        <li class="li-menu-head"><patTemplate:Translate>Mantenimiento</patTemplate:Translate></li>
+        </patTemplate:Auth>
+
+        <patTemplate:Auth command="modprofile/"  defecto="false">
+            <li class="li-menu"><a href="modprofile.php"><span class="ikmenu ik_profilesm"></span><patTemplate:Translate>Perfiles</patTemplate:Translate></a></li>
+        </patTemplate:Auth>
+        
+        <patTemplate:Auth command="modgrupos/"  defecto="false">
+			<li class="li-menu l2 lnav"><a href="modgrupos.php"><span class="ikmenu ik_group"></span>
+			<patTemplate:Translate>Grupos</patTemplate:Translate></a></li>
+			</patTemplate:Auth>
+        <li class="li-menu-head"><patTemplate:Translate>Usuario</patTemplate:Translate></li>
+
+        <li class="li-menu"><a href="login.php"><span class="ikmenu ik_logout"></span>
+        <patTemplate:Translate>Salir</patTemplate:Translate></a></li>
+	</ul>
+</div>
+
+<style>
+
+<patTemplate:Auth command="ventanas_administracion">
+</patTemplate:Auth>
+
+</style>
+
+

@@ -1,0 +1,64 @@
+<form action='{MODNAME}.php' method='post' id="validateMe">
+
+<input type='hidden' name='modo' value='{MODOEDICION}' />
+<input type='hidden' name='id_location' value='{ID_LOCATION}' />
+
+<table class="cajaedicion"  cellspacing='0' cellpadding='0' >
+<tr>
+<td valign='top'>
+
+<table width='100%'>
+<thead  class="headListado">
+<th colspan="3"><patTemplate:var name="modoediciontxt" modifier="html8"/></th></thead>
+
+<tr class="filaListado filaImpar">
+	<td class="col1"><patTemplate:T>Lugar</patTemplate:T> *</td>
+	<td colspan="2"><input  class='flat required' style='width: 20em' type='text' name='name'
+	value='<patTemplate:var name="name" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="filaListado filaPar">
+	<td class="col1"><patTemplate:T>CSS_x</patTemplate:T> *</td>
+	<td colspan="2"><input  class='flat required' style='width: 4em' type='text' name='css_x'
+	value='<patTemplate:var name="css_x" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="filaListado filaImpar">
+	<td class="col1"><patTemplate:T>CSS_y</patTemplate:T> *</td>
+	<td colspan="2"><input  class='flat required' style='width: 4em' type='text' name='css_y'
+	value='<patTemplate:var name="css_y" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="filaListado filaPar">
+	<td class="col1"><patTemplate:T>Codigo Gestor</patTemplate:T></td>
+	<td colspan="2"><input  class='flat required' style='width: 4em' type='text' name='cod_gestor'
+	value='<patTemplate:var name="cod_gestor" modifier="html8"/>'/></td>
+</tr>
+
+
+
+<tr class="filaListado filaPar oculto">
+	<td class='col1'>Etiquetas</td>
+	<td colspan="2"><select name='id_label'><patTemplate:var name="lista_etiquetas_lugares" /></select></td>
+</tr>
+
+
+<tr class="rematetabla">
+<td ></td>
+<td colspan="4" class="btncell">
+ <input  class="btn ui-state-default ui-corner-all" value="Guardar cambios" type="submit" onclick="return ComprobarDatos()">
+ <input  class="btn ui-state-default ui-corner-all  {CSSBTNREMOVE}" value="Eliminar" type="button" onclick="Eliminar()">
+ <input  class="btn ui-state-default ui-corner-all" value="Cancelar" type="button" onclick="location.href='{MODNAME}.php'">
+</td>
+</tr>
+
+</table>
+
+
+</td><td>
+
+
+</td></tr>
+</table>
+
+</form>

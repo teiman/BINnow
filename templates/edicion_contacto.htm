@@ -1,0 +1,91 @@
+
+
+
+<style>
+
+
+
+.headdato {
+    background-color: #F1F1F1 !important;
+    color: black;
+    height: 24px;
+    margin-right: 8px;
+    min-width: 64px;
+    padding-right: 8px;
+    text-align: right;
+    white-space: nowrap;
+    width: 128px;
+}
+
+.filaListado td {
+ border: 0px;
+ height: 32px;
+}
+
+tr.rematetabla td {
+    background: none repeat scroll 0 0 #F1F1F1;
+}
+
+
+.cellidiomas, .cellcomoboselector {
+  padding-bottom:20px;
+}
+
+.datosidiomas, .datoscomboselector {
+  padding-top: 20px;
+
+}
+
+</style>
+
+
+<form action='{MODNAME}.php' method='post' id="validateMe">
+
+<input type='hidden' name='modo' value='{MODOEDICION}' />
+<input type='hidden' name='id_contact' value='{ID}' />
+
+<table class="cajaedicion"  cellspacing='0' cellpadding='0' >
+<tr>
+<td valign='top'>
+
+<table width='100%'  cellspacing='0' cellpadding='0'>
+<thead  class="headListado">
+<th colspan="3"><patTemplate:var name="modoediciontxt" modifier="html8"/></th></thead>
+
+
+
+<tr class="filaListado filaPar">
+	<td class='col1 headdato'><patTemplate:T>Nombre del cliente</patTemplate:T></td>
+	<td colspan="2"><input  class='flat required' style='width: 20em' type='text' name='contact_name'
+	value='<patTemplate:var name="contact_name" modifier="html8"/>'/></td>
+</tr>
+<tr class="filaListado filaPar">
+    <td class='col1 headdato'><patTemplate:T>Código cliente</patTemplate:T></td>
+    <td colspan="2"><input  class='flat required' style='width: 20em' type='text' name='contact_code'
+    value='<patTemplate:var name="contact_code" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="filaListado filaPar">
+    <td class='col1 headdato'><patTemplate:T>Prioridad</patTemplate:T></td>
+    <td colspan="2"><select name="priority"><option style="font-weight:bold;text-align:center;padding-left:4px"  selected="selected"><patTemplate:var name="priority" /></option><option>baja</option> <option>normal</option><option>media</option><option>alta</option></select></td>
+</tr>
+
+<tr class="rematetabla">
+<td ></td>
+<td colspan="4" class="btncell">
+ <input  class="btn ui-state-default ui-corner-all" value="Guardar cambios" type="submit" onclick="return ComprobarDatos()">
+ <input  class="btn ui-state-default ui-corner-all  {CSSBTNREMOVE}" value="Eliminar" type="button" onclick="Eliminar()">
+ <input  class="btn ui-state-default ui-corner-all" value="Cancelar" type="button" onclick="location.href='{MODNAME}.php'">
+</td>
+</tr>
+
+</table>
+
+
+</td><td>
+
+
+</td></tr>
+</table>
+
+</form>

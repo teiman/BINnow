@@ -1,0 +1,43 @@
+
+<form id="altaComentarioForm" method="post" action="modcentral.php" enctype="multipart/form-data">
+
+<input type="hidden" name="modo" value="agnadirllamada" class="mododeenvio"/>
+
+<input type="hidden" name="esllamadarecibida" value="1" />
+<input type="hidden" name="escorreoelectronico" value="0" />
+
+<table  style="margin:8px;border:0px solid red;width: 580px">
+<tr>
+<td><patTemplate:T>¿Quien llama?</patTemplate:T></td>
+<td><input type="text" name="quien" class="focuseame"/>, telefono <input type="text" name="telefono" /> </td>
+</tr>
+<tr>
+<td><patTemplate:T>Cd.cliente (si disponible)</patTemplate:T></td>
+<td><input type="text" name="codcliente" class="focuseame2" /> </td>
+</tr>
+<tr>
+<td><patTemplate:T>A la atención de</patTemplate:T></td>
+<td><input type="text" name="aquien" /><span class="bloquedatocorreo oculto">, correo <input type="text" name="correo" /> </span></td>
+</tr>
+<tr>
+<td><patTemplate:T>Motivo de la llamada</patTemplate:T></td>
+<td><input type="text" name="motivo"  style="width:100%" /></td>
+</tr>
+
+<tr class="oculto cargafichero">
+<td><patTemplate:T>Fichero ( pdf,tiff,txt... ) </patTemplate:T></td>
+<td><input type="file" name="file"  style="width:100%" /></td>
+</tr>
+
+<tr class="carganotas">
+<td><patTemplate:T>Notas</patTemplate:T></td>
+<td><textarea style="width:100%;height: 200px" name="notas"></textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><input type="submit" value="Registrar llamada" /></td>
+</tr>
+
+</table>
+
+</form>

@@ -1,0 +1,6 @@
+
+
+    <div  class="cambiaModos" >
+		<patTemplate:Auth command="modreporting/"  defecto="false"><a href="modreporting.php?modo=init">Volver explotación datos</a></patTemplate:Auth>
+    	<div class="clb"></div>
+	</div>

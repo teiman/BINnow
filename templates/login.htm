@@ -1,0 +1,106 @@
+<patTemplate:tmpl name="page">
+<html>
+
+<head>
+
+    <title>BINow :: Login</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link href="css/dinamico.php?modo=login&amp;extra=login" rel="stylesheet"  type="text/css" />
+    <script src="js/dinamicojs.php?modo=login&amp;extra=basica"></script>
+	<link href='http://fonts.googleapis.com/css?family=Dosis:600' rel='stylesheet' type='text/css'>
+
+
+	<script type="text/javascript">
+
+
+        var Global = Global || [];
+
+
+	$(function() {
+
+            if($.cookie){
+                $.cookie("buscacampo", "");
+            }
+
+            $("#loginbox").focus();
+
+            var esErrorLogin = '{ESERRORLOGIN}';
+
+            if (esErrorLogin == "error" ){
+                $("#mensajeLogin").html("<patTemplate:Translate>No se pudo loguear</patTemplate:Translate>");
+                $("#mensajeLogin").show();
+            }
+
+            if($(".roundme").corners)
+                $(".roundme").corners("8px 8px")
+
+
+            setTimeout(function(){
+                $("#loginbox").focus();
+
+                if($.cookie){
+                    $.cookie("buscacampo", "");
+                }
+            },100);
+
+             
+
+
+	});
+	</script>
+
+</head>
+<body class="log-color">
+<div class="log-bg-color">
+	<div class="wrapper">
+		<div class="ocu"><patTemplate:tmpl name="cabeza" src="cabeza.htm" autoload="on" parse="on"/></div>
+		<div id="root">
+			<div id="contenedor">
+				<div id="mensajeLogin"></div>
+				<div class="caj-form-log">
+					<form method="post" action="login.php">
+						<input type="hidden" name="modo" value="login" />
+						<div id="cajadelogin" class="caj-log">
+							<div class="logo-login"></div>
+							<div class="caj-form">
+								<p class="inp-log"><span class="spn-lbl"><pattemplate:Translate>Usuario</pattemplate:Translate></span><input type="text" name="login" id="loginbox" value="" /></p>
+								<p class="inp-log"><span class="spn-lbl"><pattemplate:Translate>Contraseña</pattemplate:Translate></span><input type="password" name="pass" value="" /></p>
+								<div class="btn-log"><input type="submit" value="" class="loginbutton" /></div>
+								<div class="clb"></div>
+							</div>
+						</div>
+					</form>
+				</div>
+<!--
+				<center ><span style="background-image:url(images/bg41.png);font-size:13px;padding:6px;padding-left:20px;padding-right:20px;">Programa subvencionado por el Gobierno de Aragón</center>
+				<patTemplate:tmpl name="navegador" src="vacio.htm" autoload="off" parse="on"/>
+-->
+
+<p>&nbsp;</p>
+                <center>
+                    <span style="font-size:13px;zpadding:6px;zpadding-left:20px;zpadding-right:20px;">Liberación de software subvencionada por</span>
+
+                </center>
+
+<center>
+                <img src="images/industria-200px.jpg">
+</center>
+
+                <style>
+
+                    body {
+
+                        background-color:white!important;
+                    }
+                </style>
+
+			</div>
+		</div>
+		<div class="push"></div>
+		<div class="clb"></div>
+	</div>
+	<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+</div>
+</body>
+</html>
+</patTemplate:tmpl>

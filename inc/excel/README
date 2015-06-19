@@ -1,0 +1,144 @@
+NAME
+======
+xlsStream
+
+VERSION
+=======
+0.3 - 20 Jan 2005
+
+DESCRIPTION
+===========
+MS-Excel stream handler
+
+
+SYNOPSIS
+========
+This class read/writes a data stream directly from/to a Microsoft
+Excel spreadsheet opened with the xlsfile:// protocol. This is
+used to export associative array data directly to MS-Excel.
+
+
+REQUIREMENTS
+============
+PHP4 >= 4.3.2
+
+
+USAGE
+=====
+Include this file in your script, using include/require:
+
+    <?php
+        require_once "excel.php";
+    ?>
+
+To export an associative array to an Excel spreadsheet, simply
+call fopen() using the registered stream wrapper protocol
+xlsfile://, for example:
+
+    $fp = fopen("xlsfile://path/to/file.xls", "wb");
+
+This version expects an associative array in the form:
+    $data = array(
+        0 => array(
+            "column1" => "value1",
+            "column2" => "value2",
+            "column3" => "value3",
+            "column4" => "value4",
+            "column5" => "value5",
+        ),
+
+        1 => array(
+            "column1" => "value6",
+            "column2" => "value7",
+            "column3" => "value8",
+            "column4" => "value9",
+            "column5" => "value10",
+        ),
+
+        ...
+    );
+
+Now write your data array using a single call to fwrite():
+
+    fwrite($fp, $data);
+
+Then call fclose(), as you would normally.
+
+    fclose($fp);
+
+
+To download an excel spreadsheet:
+    <?php
+        header ("Content-Type: application/x-msexcel");
+        header ("Content-Disposition: attachment; filename=\"sample.xls\"" );
+        readfile("xlsfile://path/to/sample.xls");
+        exit;
+    ?>
+
+
+FILES
+=====
+excel.php                   Main class
+example_export.php          Example export script
+example_download.php        Example download script
+
+
+CHANGELOG
+=========
+0.3 - 20th Jan 2005
+	  Fixed generated .xls unrecognized format issue
+	  due to server endian mode
+	  (Thanks to Charles Turner for pointing this out)
+
+0.2 - 7th Jan 2005
+      Fixed bug with arrays and excel files with
+      sizes over the 8192 byte limit
+
+0.1 - 21th Oct 2004
+      Initial release
+
+
+LICENSE
+=======
+Copyright (C)2004-2005, Ignatius Teo <http://act28.com>
+All rights reserved
+
+Redistribution and use in source and binary forms, with or
+without modification, are permitted provided that the following
+conditions are met:
+
+* Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following
+disclaimer in the documentation and/or other materials provided
+with the distribution.
+
+* Neither the name of the <ORGANIZATION> nor the names of its
+contributors may be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+
+COPYRIGHT
+=========
+Copyright (C) 2004-2005 Ignatius Teo <http://act28.com>
+All Rights Reserved
+
+
+
+$Id: README,v 1.3 2005/01/20 09:58:58 Owner Exp $

@@ -1,0 +1,54 @@
+<form action='{MODNAME}.php' method='post'  id="validateMe">
+
+<input type='hidden' name='modo' value='{MODOEDICION}' />
+<input type='hidden' name='id_system_param' value='<patTemplate:var name="id_system_param"/>' />
+
+<table class="cajaedicion"  cellspacing='0' cellpadding='0' >
+<tr>
+<td valign='top'>
+
+<table width='100%'>
+<thead  class="headListado">
+<th colspan="3"><patTemplate:var name="modoediciontxt" modifier="html8"/></th></thead>
+
+<tr class="filaRelleno">
+	<td colspan="2" align="center"><patTemplate:T>Parametro</patTemplate:T> *</td>
+	<td align="center"><patTemplate:T>Valor</patTemplate:T> *</td>
+</tr>
+
+<tr class="filaListado filaImpar">
+	<td class="col1">
+
+<input  class='flat required' id="system_param_title" style='width: 15em' type='text'
+
+<patTemplate:var name="system_param_title_readonly"/>
+
+ name='system_param_title'
+
+value='<patTemplate:var name="system_param_title" modifier="html8" />'
+
+/>
+
+</td>
+	<td colspan="2"><input  class='flat required' id="system_param_value" style='width: 42em' type='text' name='system_param_value'
+	value='<patTemplate:var name="system_param_value" modifier="html8"/>'/></td>
+</tr>
+
+<tr class="rematetabla">
+<td colspan="4" class="btncell">
+ <input  class="btn ui-state-default ui-corner-all" value="Guardar cambios" type="submit" onclick="return ComprobarDatos()">
+ <input  class="btn ui-state-default ui-corner-all  {CSSBTNREMOVE}" value="Eliminar" type="button" onclick="Eliminar()">
+ <input  class="btn ui-state-default ui-corner-all" value="Cancelar" type="button" onclick="location.href='{MODNAME}.php'">
+</td>
+</tr>
+
+</table>
+
+
+</td><td>
+
+
+</td></tr>
+</table>
+
+</form>
